@@ -4,7 +4,7 @@
 ### Stack
 - Python
 - SQLAlchemy ORM
-- MySQL/SQLITE
+- MySQL/SQLite
 
 ### Features
 - 🧾 Register sales
