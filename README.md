@@ -1,4 +1,4 @@
-## 🧾 Point of Sale System (MVP)
+# 🧾 Point of Sale System (MVP)
 
 ***
 ### Stack
