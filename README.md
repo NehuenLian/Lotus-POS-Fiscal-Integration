@@ -39,7 +39,7 @@ pos_mvp
 
 1. Clone the repository
 
-`git clone <your-repo-url>`
+`git clone https://github.com/NehuenLian/POS_MVP`
 
 `cd pos_mvp`
 
