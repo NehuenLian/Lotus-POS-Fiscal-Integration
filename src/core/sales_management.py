@@ -60,8 +60,8 @@ class ProductSale:
 
     def __repr__(self) -> str:
         return (
-            f"  Producto: {self.product},\n"
-            f"  Cantidad: {self.subquantity},\n"
+            f"  Product: {self.product},\n"
+            f"  Quantity: {self.subquantity},\n"
             f"  Subtotal: ${self.subtotal},\n"
             f"  ====================\n"
         )
@@ -112,12 +112,12 @@ class SaleManagement:
 
     def __repr__(self):
         return (
-                f"  Lista: {self.sale_list},\n"
+                f"  List: {self.sale_list},\n"
                 f"  Total: ${self.amount},\n"
-                f"  Cantidad total de productos: {self.total_quantity},\n"
-                f"  Metodo de pago utilizado: {self.pay_method}\n"
-                f"  Fecha de la venta: {self.sale_date}\n"
-                f"  Hora de la venta: {self.sale_hour}\n"
+                f"  Total Product Quantity: {self.total_quantity},\n"
+                f"  Pay method used: {self.pay_method}\n"
+                f"  Date of sale: {self.sale_date}\n"
+                f"  Hour of sale: {self.sale_hour}\n"
                 )
 
     def clear_sale_list(self):
