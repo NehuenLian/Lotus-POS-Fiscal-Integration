@@ -1,32 +1,38 @@
+import flet as ft
+
 class GeneralViewsManager:
-    def __init__(self):
-        pass
+    def __init__(self, page: ft.Page):
+        self.page = page
+        self.content = ft.Column(expand=True)
+        self.callbacks = ()
+        self._layout()
 
-    def show_menu(self):
-        self.show_message(" -- Si desea consultar stock, inserte 1 -- ")
-        self.show_message(" -- Si desea insertar una venta, inserte 2 -- ")
-        self.show_message(" -- Si desea hacer gestión de precios, inserte 3 -- ")
-        self.show_message("-"*30)
-        self.show_message(" -- O si desea salir, presione Ctrl + C. -- ")
+    def set_callbacks(self, callbacks):
+        self.callbacks = callbacks
 
-    def show_message(self, message):
-        print(message)
+    def _layout(self):
+        
+        rail = ft.NavigationRail(
+            selected_index=0,
+            label_type=ft.NavigationRailLabelType.ALL,
+            destinations=[
+                ft.NavigationRailDestination(ft.Icons.POINT_OF_SALE, label="Ventas"),
+                ft.NavigationRailDestination(ft.Icons.STOREFRONT, label="Consultar stock"),
+                ft.NavigationRailDestination(ft.Icons.PRICE_CHANGE, label="Gestionar precios")
+            ],
+            on_change=lambda e: self.change_view(e.control.selected_index)
+        )
 
-    def input_message(self, input_text):
-        data = input(input_text)
-        return data
-    
-    def back_menu(self):
-        self.show_message("-"*30)
-        self.show_message("Volviendo al menú...")
+        self.page.add(
+            ft.Row(
+                [rail, ft.VerticalDivider(width=1), ft.Container(self.content, expand=True)],
+                expand=True
+            )
+        )
 
-
-    def get_user_choice(self) -> str:  # TODO: Textfield
-        while True:
-            choice = str(input("Insertar: "))
-            return choice
-
-    def request_barcode(self)-> str:  # TODO: Textfield
-        while True:
-            insert_code = input("Ingrese el código del producto o presione V para volver: ")
-            return insert_code
+    def change_view(self, idx: int):
+        if not self.callbacks:
+            return
+        self.content.controls.clear()
+        self.callbacks[idx]()
+        self.page.update()

@@ -20,6 +20,8 @@ class Product: # DTO
         self.available_quantity = available_quantity
         self.customer_price = customer_price
 
+        print(Product.product_instance_list)
+
     def __hash__(self):
         return hash(self.product_id)
     
@@ -72,6 +74,7 @@ class ProductSale:
     
     @classmethod
     def count_products_in_cart(cls) -> dict:
+        business_logger.debug("Executing count_products_in_cart")
         """
         Counts the occurrences of each Product ID in the productsale_instances list.
         Returns a dictionary where the keys are product IDs and the values are the quantity.
@@ -85,12 +88,14 @@ class ProductSale:
     
     @classmethod
     def count_and_assign_quantity_by_product(cls, product_count: dict):
+        business_logger.debug("Executing count_and_assign_quantity_by_product")
         for unit in cls.productsale_instances:
             quantity = product_count[unit.product.product_id] # Gets the count using the id as a index
             unit.subquantity = quantity
             
     @classmethod
     def calculate_and_assign_subtotal_to_each_product(cls, product_count: dict):
+        business_logger.debug("Executing calculate_and_assign_subtotal_to_each_product")
         for unit in cls.productsale_instances:
             occurrence = product_count[unit.product.product_id]
             subtotal = unit.product.customer_price * occurrence
@@ -129,6 +134,7 @@ class SaleManagement:
             product_id = query.check_product_exists_by_barcode(barcode)
             if product_id:
                 business_logger.debug(f'Product with (ID:{product_id} verified.)')
+
                 return product_id
 
     def get_full_product(self, product_id: int) -> Product:
@@ -138,22 +144,45 @@ class SaleManagement:
             product = Product(product_id, barcode, product_name, available_quantity, customer_price)
             business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
             if product.product_id:
+
                 return product
 
-    def build_product_sale(self, product: Product):
-        for unit in product.product_instance_list:
+    def create_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
+        Product(product_id, barcode, product_name, available_quantity, customer_price)
+        business_logger.debug(
+            f"A product was added with the following characteristics: "
+            f"product_id={product_id}, barcode='{barcode}', product_name='{product_name}', "
+            f"available_quantity={available_quantity}, customer_price=${customer_price}"
+        )
+
+    def cancel_product(self, id_to_cancel: int):
+        for unit in Product.product_instance_list[:]:
+            if id_to_cancel == unit.product_id:
+                Product.product_instance_list.remove(unit)
+                business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
+                break
+
+    def set_pay_method(self, method_selected):
+        self.pay_method = method_selected
+        business_logger.info(f'Pay method selected: "{method_selected}"')
+
+    def build_product_sale(self):
+        """
+        The DTO 'Product' transitions into a sales-state object, acquiring attributes such as 'subtotal' or 'quantity per product' (subquantity).
+        """
+        for unit in Product.product_instance_list:
             product_sale = ProductSale(unit)
         product_count = product_sale.count_products_in_cart()
         product_sale.count_and_assign_quantity_by_product(product_count)
         product_sale.calculate_and_assign_subtotal_to_each_product(product_count)
 
-    def cancel_product(self, id_to_cancel: int, product: Product):
-        for unit in product.product_instance_list[:]:
-            if id_to_cancel == unit.product_id:
-                product.product_instance_list.remove(unit)
-                business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
-                break
-        
+    def compute_total_quantity(self) -> int: # TODO: refactor
+        total_quantity = len(self.sale_list)
+        self.total_quantity = total_quantity
+        business_logger.info(f'Total quantity: {total_quantity}')
+
+        return self.total_quantity
+    
     def compute_total_amount(self) -> float: # TODO: refactor
         prices = []
         for unit in self.sale_list:
@@ -161,13 +190,8 @@ class SaleManagement:
         amount = sum(prices)
         self.amount = amount
         business_logger.info(f'Sale amount: ${amount}')
-        return amount
 
-    def compute_total_quantity(self) -> int: # TODO: refactor
-        total_quantity = len(self.sale_list)
-        self.total_quantity = total_quantity
-        business_logger.info(f'Total quantity: {total_quantity}')
-        return self.total_quantity
+        return amount
     
     def remove_duplicates(self):
         """
@@ -179,10 +203,6 @@ class SaleManagement:
 
         self.sale_list = list(sale_with_no_duplicates)
 
-    def set_pay_method(self, method_selected):
-        self.pay_method = method_selected
-        business_logger.info(f'Pay method selected: "{method_selected}"')
-
     def get_timestamp(self):
         now = dtime.datetime.now().replace(microsecond=0)
         self.sale_date = now.date()
@@ -193,6 +213,8 @@ class SaleManagement:
         self.compute_total_amount()
         self.remove_duplicates()
         self.get_timestamp()
+
+        print(f"El estado en este momento deberia tener todos los atributos: {self}")
 
 class SalePersister:
     def __init__(self, sale: SaleManagement):
@@ -260,6 +282,7 @@ class SalePersister:
             - Clear product and sales lists from memory after a successful transaction.
         """
         business_logger.info(f'Starting final transaction.')
+
         with session_scope(self.connection) as session:
             details_list = self.get_products_dict()
             sale_id = self.insert_sale()
@@ -271,3 +294,6 @@ class SalePersister:
             Product.clear_product_instance_list()
             ProductSale.clear_productsale_instances()
             self.sale.clear_sale_list()
+
+
+

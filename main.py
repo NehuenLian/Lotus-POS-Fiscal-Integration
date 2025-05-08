@@ -1,5 +1,8 @@
+import flet as ft
 from src.controllers.controller import MainController
 
+def main(page: ft.Page):
+    MainController(page)
+
 if __name__ == "__main__":
-    main_controller = MainController()
-    main_controller.execute()
+    ft.app(target=main)
