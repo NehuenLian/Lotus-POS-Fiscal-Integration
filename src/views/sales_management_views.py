@@ -11,7 +11,7 @@ class SalesViewManager:
         self.divider = None
         self.barcode_textfield = None
         self.search_button = None
-        self.data_table = None
+        #self.data_table = None
         self.data_table_row = None
 
         self.sale_total_dict = {}
@@ -21,6 +21,8 @@ class SalesViewManager:
 
         self.pay_method_row = None
         self.pay_method_label = None
+
+        self.data_table = ft.Ref[ft.DataTable]()
 
         self.show_all_elements()
         self.display_product()
@@ -73,7 +75,7 @@ class SalesViewManager:
 
     def display_product(self):
 
-        self.data_table = ft.DataTable(
+        table = ft.DataTable(ref=self.data_table,
             bgcolor=ft.Colors.BLUE_GREY_900,
             border=ft.border.all(2, ft.Colors.BLUE_GREY_500),
             border_radius=10,
@@ -92,7 +94,14 @@ class SalesViewManager:
                 ],
             rows = []
             )
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.data_table, self.pay_method_row, self.register_sale_button]
+        
+        self.table_container = ft.Container(content=ft.Column([table], scroll="auto"),
+                                       height=300,
+                                       border_radius=5,
+                                       border=ft.border.all(2, ft.Colors.BLACK), padding=5)
+
+
+        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
         self.page.update()
 
     def show_product_in_table(self, barcode):
@@ -140,13 +149,15 @@ class SalesViewManager:
                     ft.DataCell(ft.IconButton(icon=ft.Icons.DELETE,icon_color=ft.Colors.RED_400, on_click=lambda e: self.delete_product(product_id))),
                 ]
             )
-
-        self.data_table.rows.append(new_row)
+        print("add_row")
+        print(new_row.cells[2].content)
+        self.data_table.current.rows.append(new_row)
         self.build_id_idx_dict()
 
         self.data_table_row = ft.Row([self.data_table], ft.MainAxisAlignment.CENTER)
         self.sale_total_label.value = f"Total: ${self.sale_total}"
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.data_table_row, self.pay_method_row, self.register_sale_button]
+        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
+        self.data_table.current.update()
         self.page.update()
 
     def update_row(self, product_id):
@@ -156,12 +167,13 @@ class SalesViewManager:
         if product_id in self.id_idx:
             row_index = self.id_idx[product_id]
 
-        self.data_table.rows[row_index].cells[5].content = ft.Text(value=str(product['quantity']))
-        self.data_table.rows[row_index].cells[6].content = ft.Text(value=f"${product['subtotal']}")
+        self.data_table.current.rows[row_index].cells[5].content = ft.Text(value=str(product['quantity']))
+        self.data_table.current.rows[row_index].cells[6].content = ft.Text(value=f"${product['subtotal']}")
 
         self.data_table_row = ft.Row([self.data_table], ft.MainAxisAlignment.CENTER)
         self.sale_total_label.value = f"Total: ${self.sale_total}"
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.data_table_row, self.pay_method_row, self.register_sale_button]
+        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
+        self.data_table.current.update()
         self.page.update()
 
     def add_product(self, id_to_add):
@@ -200,8 +212,9 @@ class SalesViewManager:
 
                 if id_to_cancel in self.id_idx:
                     row_index = self.id_idx[id_to_cancel]
-                    self.data_table.rows.pop(row_index)
+                    self.data_table.current.rows.pop(row_index)
                     self.build_id_idx_dict()
+                    self.data_table.current.update()
                     self.page.update()
 
     def set_pay_method(self, method):
@@ -234,14 +247,14 @@ class SalesViewManager:
 
     #Aux
     def reset_page_default(self):
-        self.data_table.rows.clear()
+        self.data_table.current.rows.clear()
         self.sale_total_dict = {}
         self.sale_total_label.value = "Total: $0.  "
         self.pay_method_label.value = f"Método de pago: Ninguno"
         self.page.update()
 
     def build_id_idx_dict(self):
-        for index, row in enumerate(self.data_table.rows):
+        for index, row in enumerate(self.data_table.current.rows):
             row_content = row.cells[0].content.value
             row_index = index
 
