@@ -5,6 +5,7 @@
 - Python
 - SQLAlchemy ORM
 - MySQL/SQLite
+- Flet Framework
 
 ### Features
 - 🧾 Register sales
