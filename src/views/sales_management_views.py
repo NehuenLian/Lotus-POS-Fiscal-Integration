@@ -6,108 +6,53 @@ class SalesViewManager:
     def __init__(self, page: ft.Page, cont: ft.Column, sales_controller):
         self.page, self.cont = page, cont
         self.sales_controller = sales_controller
+        self.notification = Notifications(page)
+        self.widgets = Widgets(self)
 
-        self.title = None
-        self.divider = None
-        self.barcode_textfield = None
-        self.search_button = None
-        #self.data_table = None
-        self.data_table_row = None
-
-        self.sale_total_dict = {}
-
-        self.sale_total_label = None
-        self.sale_total = 0
-
-        self.pay_method_row = None
-        self.pay_method_label = None
+        self.barcode_textfield = ft.Ref[ft.TextField]()
 
         self.data_table = ft.Ref[ft.DataTable]()
+        self.data_table_row = None
 
-        self.show_all_elements()
-        self.display_product()
+        self.sale_total_label = ft.Ref[ft.Text]()
+        self.sale_total = 0
 
+        self.pay_method_label = ft.Ref[ft.Text]()
+
+        self._build_layout()
+
+        self.sale_total_dict = {}
         self.id_idx = {}
-
-    def snack_bar_error_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message, 
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.RED))
     
-    def snack_bar_success_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message,
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.GREEN))
-    
-    def show_all_elements(self):
-        self.title = ft.Row([ft.Text("Ventas", 
-                                    size=30, 
-                                    weight=ft.FontWeight.BOLD, 
-                                    color=ft.Colors.WHITE)], alignment=ft.MainAxisAlignment.CENTER)
-        
-        self.divider = ft.Divider(height=20, thickness=1, color=ft.Colors.GREY_600)
-        self.barcode_textfield = ft.TextField(label="Ingrese el código del producto...", width=300 ,on_submit=self.search_product_handler)
+    def _build_layout(self):
+        title = self.widgets.show_title()
+        top_divider = self.widgets.show_top_divider()
+        barcode_textfield = self.widgets.show_barcode_textfield()
+        search_button = self.widgets.show_search_button()
+        table_container = self.widgets.show_products_table()
+        register_sale_button = self.widgets.show_register_sale_button()
+        bottom_divider = self.widgets.show_bottom_divider()
+        pay_method_label = self.widgets.show_pay_method()
+        cash_button, transfer_button = self.widgets.pay_methods_buttons()
+        sale_total_label = self.widgets.show_sale_total()
 
-        self.search_button = ft.ElevatedButton("Obtener", 
-                                            on_click=self.search_product_handler,
-                                            bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE)
-        
-        self.sale_total_label = ft.Text(f"Total: $0.  ", size=22, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE)
-        self.pay_method_label = ft.Text(f"Método de pago: Ninguno", size=22, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE)
+        self.cont.controls = [
+                            title,
+                            top_divider,
+                            barcode_textfield,
+                            search_button,
+                            register_sale_button,
+                            table_container,
+                            bottom_divider,
+                            pay_method_label,
+                            cash_button, transfer_button,
+                            sale_total_label
+                        ]
 
-        cash_button = ft.ElevatedButton("Efectivo", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=lambda e: self.set_pay_method(cash_button.text))
-        transfer_button = ft.ElevatedButton("Transferencia", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=lambda e: self.set_pay_method(transfer_button.text))
-
-        self.register_sale_button = ft.ElevatedButton("Completar venta", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=self.register_sale)
-
-        self.pay_method_row = ft.Row([cash_button, transfer_button], ft.MainAxisAlignment.CENTER)
-
-        self.input_and_button_row = ft.Row([self.barcode_textfield, self.search_button, self.sale_total_label, self.pay_method_label, self.register_sale_button], alignment=ft.MainAxisAlignment.START)
-
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row]
         self.page.update()
 
-    def display_product(self):
+    def show_product_in_table(self, product):
 
-        table = ft.DataTable(ref=self.data_table,
-            bgcolor=ft.Colors.BLUE_GREY_900,
-            border=ft.border.all(2, ft.Colors.BLUE_GREY_500),
-            border_radius=10,
-            vertical_lines=ft.border.BorderSide(3, ft.Colors.BLUE_GREY_400),
-            horizontal_lines=ft.border.BorderSide(1, ft.Colors.BLUE_GREY_400),
-            columns = [
-                ft.DataColumn(ft.Text(value="ID", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Código", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Nombre del Producto", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Cantidad Disponible", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Precio", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Cantidad", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Subtotal", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Agregar", color=ft.Colors.WHITE)),
-                ft.DataColumn(ft.Text(value="Eliminar", color=ft.Colors.WHITE)),
-                ],
-            rows = []
-            )
-        
-        self.table_container = ft.Container(content=ft.Column([table], scroll="auto"),
-                                       height=300,
-                                       border_radius=5,
-                                       border=ft.border.all(2, ft.Colors.BLACK), padding=5)
-
-
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
-        self.page.update()
-
-    def show_product_in_table(self, barcode):
-
-        id = self.sales_controller.get_id(barcode)
-        product = self.sales_controller.get_product(id)
         product_id = product.product_id
 
         if product_id in self.sale_total_dict:
@@ -132,7 +77,6 @@ class SalesViewManager:
             self.sale_total += self.sale_total_dict[product_id]['customer_price']
             self.add_row()
 
-
     def add_row(self):
         for product_id, product_info in self.sale_total_dict.items():
 
@@ -149,14 +93,12 @@ class SalesViewManager:
                     ft.DataCell(ft.IconButton(icon=ft.Icons.DELETE,icon_color=ft.Colors.RED_400, on_click=lambda e: self.delete_product(product_id))),
                 ]
             )
-        print("add_row")
-        print(new_row.cells[2].content)
+
         self.data_table.current.rows.append(new_row)
         self.build_id_idx_dict()
 
         self.data_table_row = ft.Row([self.data_table], ft.MainAxisAlignment.CENTER)
-        self.sale_total_label.value = f"Total: ${self.sale_total}"
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
+        self.sale_total_label.current.value = f"Total: ${self.sale_total}"
         self.data_table.current.update()
         self.page.update()
 
@@ -171,8 +113,8 @@ class SalesViewManager:
         self.data_table.current.rows[row_index].cells[6].content = ft.Text(value=f"${product['subtotal']}")
 
         self.data_table_row = ft.Row([self.data_table], ft.MainAxisAlignment.CENTER)
-        self.sale_total_label.value = f"Total: ${self.sale_total}"
-        self.cont.controls = [self.title, self.divider, self.input_and_button_row, self.table_container, self.pay_method_row, self.register_sale_button]
+        self.sale_total_label.current.value = f"Total: ${self.sale_total}"
+
         self.data_table.current.update()
         self.page.update()
 
@@ -195,7 +137,7 @@ class SalesViewManager:
 
         elif products['quantity'] >= products['available_quantity']:
 
-            self.snack_bar_error_message("No quedan existencias para seguir agregando productos.")
+            self.notification.snack_bar_error_message("No quedan existencias para seguir agregando productos.")
             
     def delete_product(self, id_to_cancel):
             self.sales_controller.remove_product(id_to_cancel)
@@ -215,42 +157,49 @@ class SalesViewManager:
                     self.data_table.current.rows.pop(row_index)
                     self.build_id_idx_dict()
                     self.data_table.current.update()
+                    
+                    self.sale_total -= products['customer_price']
+                    self.sale_total_label.current.value = f"Total: ${self.sale_total}"
+
                     self.page.update()
 
+
     def set_pay_method(self, method):
-        self.pay_method_label.value = f"Método de pago: {method}"
+        self.pay_method_label.current.value = f"Método de pago: {method}"
         self.page.update()
 
         self.sales_controller.choose_pay_method(method)
 
     def register_sale(self, e):
         if not self.sale_total_dict:
-            self.snack_bar_error_message("Por favor, seleccione al menos un producto.")
-        elif self.pay_method_label.value == "Método de pago: Ninguno":
-            self.snack_bar_error_message("Por favor, seleccione un método de pago.")
+            self.notification.snack_bar_error_message("Por favor, seleccione al menos un producto.")
+        elif self.pay_method_label.current.value == "Método de pago: Ninguno":
+            self.notification.snack_bar_error_message("Por favor, seleccione un método de pago.")
         else:
             self.sales_controller.complete_sale()
-            self.snack_bar_success_message("Venta registrada exitosamente.")
+            self.notification.snack_bar_success_message("Venta registrada exitosamente.")
             self.reset_page_default()
             print(self.sale_total_dict)
 
-    # Handlers
+    # Handler
     def search_product_handler(self, e):
-        barcode = self.barcode_textfield.value
+        barcode = self.barcode_textfield.current.value
         if re.fullmatch("[A-Za-z0-9]+", barcode):
             try:
-                self.show_product_in_table(barcode)
+                id = self.sales_controller.get_id(barcode)
+                product = self.sales_controller.get_product(id)
+                self.show_product_in_table(product)
             except ProductNotFoundError:
-                self.snack_bar_error_message("Producto no encontrado.")
+                self.notification.snack_bar_error_message("Producto no encontrado.")
         else:
-            self.snack_bar_error_message("No se permiten caracteres especiales.")
+            self.notification.snack_bar_error_message("No se permiten caracteres especiales.")
 
-    #Aux
+    # Aux
     def reset_page_default(self):
         self.data_table.current.rows.clear()
         self.sale_total_dict = {}
-        self.sale_total_label.value = "Total: $0.  "
-        self.pay_method_label.value = f"Método de pago: Ninguno"
+        self.sale_total_label.current.value = "Total: $0.  "
+        self.pay_method_label.current.value = f"Método de pago: Ninguno"
         self.page.update()
 
     def build_id_idx_dict(self):
@@ -259,3 +208,81 @@ class SalesViewManager:
             row_index = index
 
             self.id_idx[row_content] = row_index
+
+class Widgets:
+    def __init__(self, sales_view_manager):
+        self.sales_view_manager = sales_view_manager
+
+    def show_title(self):
+        return ft.Row([ft.Text("Ventas", size=30, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE)], alignment=ft.MainAxisAlignment.CENTER)
+    
+    def show_top_divider(self):
+        return ft.Divider(height=20, thickness=1, color=ft.Colors.GREY_600)
+    
+    def show_barcode_textfield(self):
+        return ft.TextField(ref=self.sales_view_manager.barcode_textfield ,label="Ingrese el código del producto...", width=300 ,on_submit=self.sales_view_manager.search_product_handler)
+    
+    def show_search_button(self):
+        return ft.ElevatedButton("Obtener", on_click=self.sales_view_manager.search_product_handler, bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE)
+
+    def show_register_sale_button(self):
+        return ft.ElevatedButton("Completar venta", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=self.sales_view_manager.register_sale)
+    
+    def show_products_table(self):
+
+        table = ft.DataTable(ref=self.sales_view_manager.data_table,
+            bgcolor=ft.Colors.BLUE_GREY_900,
+            border=ft.border.all(2, ft.Colors.BLUE_GREY_500),
+            border_radius=10,
+            vertical_lines=ft.border.BorderSide(3, ft.Colors.BLUE_GREY_400),
+            horizontal_lines=ft.border.BorderSide(1, ft.Colors.BLUE_GREY_400),
+            columns = [
+                ft.DataColumn(ft.Text(value="ID", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Código", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Nombre del Producto", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Cantidad Disponible", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Precio", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Cantidad", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Subtotal", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Agregar", color=ft.Colors.WHITE)),
+                ft.DataColumn(ft.Text(value="Eliminar", color=ft.Colors.WHITE)),
+                ],
+            rows = []
+            )
+        
+        return ft.Container(content=ft.Column([table], scroll="auto"), height=300, border_radius=5, border=ft.border.all(2, ft.Colors.BLACK), padding=5)
+
+    def show_bottom_divider(self):
+        return ft.Divider(height=20, thickness=1, color=ft.Colors.GREY_600)
+
+    def show_pay_method(self):
+        return ft.Text(f"Método de pago: Ninguno", ref=self.sales_view_manager.pay_method_label, size=22, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE)
+
+    def pay_methods_buttons(self):
+        cash_button = ft.ElevatedButton("Efectivo", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=lambda e: self.sales_view_manager.set_pay_method(cash_button.text))
+        transfer_button = ft.ElevatedButton("Transferencia", bgcolor=ft.Colors.BLUE_400, color=ft.Colors.WHITE, on_click=lambda e: self.sales_view_manager.set_pay_method(transfer_button.text))
+        return cash_button, transfer_button
+
+    def show_sale_total(self):
+        return ft.Text(f"Total: $0.  ", ref=self.sales_view_manager.sale_total_label, size=22, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE)
+
+class Notifications:
+    def __init__(self, page):
+        self.page = page
+ 
+    #  Notifications: display popup messages for error or success feedback in the UI
+    def snack_bar_error_message(self, message):
+        return self.page.open(ft.SnackBar(ft.Text(value=message, 
+                                                color=ft.Colors.WHITE, 
+                                                weight=ft.FontWeight.BOLD, 
+                                                text_align=ft.TextAlign.CENTER,
+                                                size=20
+                                                ), bgcolor=ft.Colors.RED))
+    
+    def snack_bar_success_message(self, message):
+        return self.page.open(ft.SnackBar(ft.Text(value=message,
+                                                color=ft.Colors.WHITE, 
+                                                weight=ft.FontWeight.BOLD, 
+                                                text_align=ft.TextAlign.CENTER,
+                                                size=20
+                                                ), bgcolor=ft.Colors.GREEN))

@@ -18,7 +18,8 @@ class GeneralViewsManager:
             destinations=[
                 ft.NavigationRailDestination(ft.Icons.POINT_OF_SALE, label="Ventas"),
                 ft.NavigationRailDestination(ft.Icons.STOREFRONT, label="Consultar stock"),
-                ft.NavigationRailDestination(ft.Icons.PRICE_CHANGE, label="Gestionar precios")
+                ft.NavigationRailDestination(ft.Icons.PRICE_CHANGE, label="Gestionar precios"),
+                ft.NavigationRailDestination(ft.Icons.SETTINGS, label="Ajustes")
             ],
             on_change=lambda e: self.change_view(e.control.selected_index)
         )
