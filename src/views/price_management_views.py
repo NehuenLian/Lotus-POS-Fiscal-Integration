@@ -13,6 +13,7 @@ class PriceViewsManager:
         self.barcode_textfield = ft.Ref[ft.TextField]()
 
         self.current_price_value = None
+
         self.current_price_label = ft.Ref[ft.Text]()
         self.new_price_textfield = ft.Ref[ft.TextField]()
 
@@ -49,7 +50,6 @@ class PriceViewsManager:
                 ])
         
         self.current_price_value = current_price
-
         self.data_table.current.rows = [new_row]
         self.page.update()
 
@@ -68,7 +68,9 @@ class PriceViewsManager:
             self.notification.snack_bar_error_message("No se permiten caracteres especiales.")
 
     def alert_dialog_handler(self):
+
         self.final_alert_dialog = self.components.confirm_changes_modal()
+
         self.page.open(self.final_alert_dialog)
 
     def confirm_changes_handler(self, e):
@@ -78,6 +80,7 @@ class PriceViewsManager:
         self.reset_page_default()
 
     def update_price_handler(self, e):
+
         try:
             self.new_price = float(self.new_price_textfield.current.value)
         except ValueError:

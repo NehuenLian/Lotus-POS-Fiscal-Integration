@@ -216,7 +216,7 @@ class Widgets:
         register_sale_button = ft.ElevatedButton("Completar venta", on_click=self.sales_view_manager.register_sale)
     
         return ft.Row([ft.Row([barcode_field, obtain_product_button], spacing=10), register_sale_button], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)
-    
+
     def show_products_table(self):
 
         table = ft.DataTable(ref=self.sales_view_manager.data_table,
