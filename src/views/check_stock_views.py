@@ -53,8 +53,8 @@ class UIComponents:
         self.stock_views_manager = stock_views_manager
 
     def show_header(self):
-        title = ft.Row([ft.Text("Consultar Stock", size=30, weight=ft.FontWeight.BOLD)], alignment=ft.MainAxisAlignment.CENTER)
-        top_divider = ft.Divider(height=20, thickness=1)
+        title = ft.Text("Consultar Stock", size=15, weight=ft.FontWeight.BOLD)
+        top_divider = ft.Divider(height=1)
 
         return ft.Column([title, top_divider])
     
@@ -66,14 +66,16 @@ class UIComponents:
     
     def show_info_table(self):
         table = ft.DataTable(ref=self.stock_views_manager.data_table,
-
+        border=ft.border.all(2, ft.Colors.BLUE_GREY_200),
+        vertical_lines=ft.border.BorderSide(3, ft.Colors.BLUE_GREY_200),
+        horizontal_lines=ft.border.BorderSide(1, ft.Colors.BLUE_GREY_400),
             columns = [
                 ft.DataColumn(ft.Text(value="Nombre del Producto")),
                 ft.DataColumn(ft.Text(value="Cantidad disponible")),
             ])
         
-        return ft.Container(content=ft.Column([table], scroll="auto"), height=400, alignment=ft.alignment.top_center)
-    
+        return ft.Container(content=ft.Column([ft.Row([table], alignment=ft.MainAxisAlignment.CENTER)], scroll="auto"), expand=True)
+
 class Notifications:
     def __init__(self, page):
         self.page = page
@@ -85,4 +87,4 @@ class Notifications:
                                                 weight=ft.FontWeight.BOLD, 
                                                 text_align=ft.TextAlign.CENTER,
                                                 size=20
-                                                ), bgcolor=ft.Colors.RED))
+                                                ), bgcolor=ft.Colors.RED, duration=2000))
