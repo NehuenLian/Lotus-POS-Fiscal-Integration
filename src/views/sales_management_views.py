@@ -7,7 +7,7 @@ class SalesViewManager:
         self.page, self.cont = page, cont
         self.sales_controller = sales_controller
         self.notification = Notifications(page)
-        self.widgets = Widgets(self)
+        self.components = UIComponents(self)
 
         self.barcode_textfield = ft.Ref[ft.TextField]()
 
@@ -25,19 +25,21 @@ class SalesViewManager:
         self.id_idx = {}
     
     def _build_layout(self):
-        header = self.widgets.show_header()
-        search = self.widgets.show_search_controls()
-        table = self.widgets.show_products_table()
+        header = self.components.show_header()
+        search = self.components.show_search_controls()
+        table = self.components.show_products_table()
 
-        bottom_divider = self.widgets.show_bottom_divider()
-        pay_methods = self.widgets.pay_methods_buttons()
+        bottom_labels = self.components.show_bottom_labels()
+        bottom_divider = self.components.set_divider()
+        pay_methods = self.components.pay_methods_buttons()
 
         self.cont.controls = [
                             header,
                             search,
                             table,
                             bottom_divider,
-                            pay_methods,
+                            bottom_labels,
+                            pay_methods
                         ]
 
         self.page.update()
@@ -170,7 +172,6 @@ class SalesViewManager:
             self.sales_controller.complete_sale()
             self.notification.snack_bar_success_message("Venta registrada exitosamente.")
             self.reset_page_default()
-            print(self.sale_total_dict)
 
     # Handler
     def search_product_handler(self, e):
@@ -200,13 +201,13 @@ class SalesViewManager:
 
             self.id_idx[row_content] = row_index
 
-class Widgets:
+class UIComponents:
     def __init__(self, sales_view_manager):
         self.sales_view_manager = sales_view_manager
 
     def show_header(self):
-        title = ft.Row([ft.Text("Ventas", size=30, weight=ft.FontWeight.BOLD)], alignment=ft.MainAxisAlignment.CENTER)
-        top_divider = ft.Divider(height=20, thickness=1)
+        title = ft.Text("Ventas", size=15, weight=ft.FontWeight.BOLD)
+        top_divider = ft.Divider(height=1)
 
         return ft.Column([title, top_divider])
     
@@ -220,7 +221,9 @@ class Widgets:
     def show_products_table(self):
 
         table = ft.DataTable(ref=self.sales_view_manager.data_table,
-
+        border=ft.border.all(2, ft.Colors.BLUE_GREY_200),
+        vertical_lines=ft.border.BorderSide(3, ft.Colors.BLUE_GREY_200),
+        horizontal_lines=ft.border.BorderSide(1, ft.Colors.BLUE_GREY_400),
             columns = [
                 ft.DataColumn(ft.Text(value="ID")),
                 ft.DataColumn(ft.Text(value="Código")),
@@ -235,14 +238,16 @@ class Widgets:
             rows = []
             )
         
-        return ft.Container(content=ft.Column([table], scroll="auto"), height=400, alignment=ft.alignment.top_center)
+        return ft.Container(content=ft.Column([ft.Row([table], alignment=ft.MainAxisAlignment.CENTER)], scroll="auto"), expand=True)
+    
+    def set_divider(self):
+        return ft.Divider(height=20, thickness=1, color=ft.Colors.GREY_600)
 
-    def show_bottom_divider(self):
-        bottom_divider = ft.Divider(height=20, thickness=1, color=ft.Colors.GREY_600)
+    def show_bottom_labels(self):
         pay_method_label = ft.Text(f"Método de pago: Ninguno", ref=self.sales_view_manager.pay_method_label, size=22)
         sale_total_label = ft.Text(f"Total: $0.  ", ref=self.sales_view_manager.sale_total_label, size=22)
 
-        return ft.Column([bottom_divider, ft.Row([pay_method_label, sale_total_label], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)])
+        return ft.Column([ft.Row([pay_method_label, sale_total_label], alignment=ft.MainAxisAlignment.SPACE_BETWEEN)])
 
     def pay_methods_buttons(self):
         cash_button = ft.ElevatedButton("Efectivo", on_click=lambda e: self.sales_view_manager.set_pay_method(cash_button.text))
@@ -261,7 +266,7 @@ class Notifications:
                                                 weight=ft.FontWeight.BOLD, 
                                                 text_align=ft.TextAlign.CENTER,
                                                 size=20
-                                                ), bgcolor=ft.Colors.RED))
+                                                ), bgcolor=ft.Colors.RED, duration=2000))
     
     def snack_bar_success_message(self, message):
         return self.page.open(ft.SnackBar(ft.Text(value=message,
@@ -269,4 +274,4 @@ class Notifications:
                                                 weight=ft.FontWeight.BOLD, 
                                                 text_align=ft.TextAlign.CENTER,
                                                 size=20
-                                                ), bgcolor=ft.Colors.GREEN))
+                                                ), bgcolor=ft.Colors.GREEN, duration=1000))
