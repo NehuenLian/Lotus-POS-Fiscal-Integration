@@ -156,7 +156,6 @@ class SalesViewManager:
 
                     self.page.update()
 
-
     def set_pay_method(self, method):
         self.pay_method_label.current.value = f"Método de pago: {method}"
         self.page.update()

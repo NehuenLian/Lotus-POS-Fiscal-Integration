@@ -1,6 +1,5 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, Numeric, String, Time
 from sqlalchemy.orm import DeclarativeBase, relationship
-from src.database import connection
 
 
 class Base(DeclarativeBase):
@@ -44,5 +43,5 @@ class SalesDetails(Base):
     sale = relationship("Sales", back_populates="details")
     product = relationship("Stock", back_populates="sales_details")
 
-
-Base.metadata.create_all(connection.engine)
+def initialize_database(connection):
+    Base.metadata.create_all(connection.engine)

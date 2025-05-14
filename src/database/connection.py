@@ -18,6 +18,7 @@ class DataBaseConnection:
     def connect(self):
         if not self.session:
             self.session = self.Session()
+            print("conexion establecida")
 
     def get_session(self):
         if not self.session:
