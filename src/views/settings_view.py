@@ -27,15 +27,15 @@ class UIComponents:
         return ft.Column([title, top_divider])
 
     def connect_to_other_db_form(self):
-        section_title = ft.Text(value="Cambiar de base de datos", size=15)
+        section_title = ft.Text(value="Cambiar de base de datos [Para desarrollador]", size=15)
         section_divider = ft.Divider(height=1)
         db_url_field = ft.TextField(label="Ingrese la URL de la base de datos")
-        update_url_button = ft.ElevatedButton("Actualizar", on_click=lambda e: self.settings_manager.settings_controller.update_db_url(db_url_field.value))
-        connect_button = ft.ElevatedButton("Conectarse", bgcolor=ft.Colors.GREEN, color=ft.Colors.WHITE, on_click=self.settings_manager.settings_controller.connect_to_new_db)
+        update_url_button = ft.ElevatedButton("Guardar", on_click=lambda e: self.settings_manager.settings_controller.update_db_url(db_url_field.value))
+        disconnect_button = ft.ElevatedButton("Desconectarse", on_click=self.settings_manager.settings_controller.disconnect, bgcolor=ft.Colors.RED)
 
         return ft.Container(content=ft.Column([
                                             ft.Row([section_title],alignment=ft.MainAxisAlignment.CENTER), 
                                             section_divider, 
-                                            ft.Row([db_url_field, update_url_button, connect_button])
+                                            ft.Row([db_url_field, update_url_button, disconnect_button])
                                             ]), 
-                                        padding=25)
+                                        padding=10)

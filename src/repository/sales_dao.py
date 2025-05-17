@@ -10,7 +10,7 @@ class SalesDAO:
     def __init__(self, session):
         self.session = session
 
-    def insert_sale_record(self, total_quantity, amount, pay_method, sale_date, sale_hour):
+    def insert_sale_record(self, total_quantity, amount, pay_method, sale_date, sale_hour): # sales_management.py
         try:
             sale = Sales(db_purchased_quantity=total_quantity, db_amount=amount, db_payment_method=pay_method, db_date=sale_date, db_hour=sale_hour)
             self.session.add(sale)

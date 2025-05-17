@@ -1,13 +1,17 @@
 import flet as ft
 import re
 from src.exceptions import ProductNotFoundError
+from src.utils.flags import FlagManager
+from src.views.notifications import SnackBarNotifications
+
 
 class SalesViewManager:
     def __init__(self, page: ft.Page, cont: ft.Column, sales_controller):
         self.page, self.cont = page, cont
         self.sales_controller = sales_controller
-        self.notification = Notifications(page)
+        self.notification = SnackBarNotifications(page)
         self.components = UIComponents(self)
+        self.flags = FlagManager()
 
         self.barcode_textfield = ft.Ref[ft.TextField]()
 
@@ -176,12 +180,19 @@ class SalesViewManager:
     def search_product_handler(self, e):
         barcode = self.barcode_textfield.current.value
         if re.fullmatch("[A-Za-z0-9]+", barcode):
-            try:
-                id = self.sales_controller.get_id(barcode)
-                product = self.sales_controller.get_product(id)
-                self.show_product_in_table(product)
-            except ProductNotFoundError:
-                self.notification.snack_bar_error_message("Producto no encontrado.")
+
+            if self.flags.connection_exists:
+                try:
+                    id = self.sales_controller.get_id(barcode)
+                    product = self.sales_controller.get_product(id)
+                    self.show_product_in_table(product)
+                    
+                except ProductNotFoundError:
+                    self.notification.snack_bar_error_message("Producto no encontrado.")
+
+            else:
+                self.notification.snack_bar_error_message("No se detectó una conexión a una base de datos.")
+
         else:
             self.notification.snack_bar_error_message("No se permiten caracteres especiales.")
 
@@ -253,24 +264,3 @@ class UIComponents:
         transfer_button = ft.ElevatedButton("Transferencia", on_click=lambda e: self.sales_view_manager.set_pay_method(transfer_button.text))
         
         return ft.Row([cash_button, transfer_button])
-
-class Notifications:
-    def __init__(self, page):
-        self.page = page
- 
-    #  Notifications: display popup messages for error or success feedback in the UI
-    def snack_bar_error_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message, 
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.RED, duration=2000))
-    
-    def snack_bar_success_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message,
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.GREEN, duration=1000))

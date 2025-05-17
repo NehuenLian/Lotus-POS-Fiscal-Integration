@@ -1,13 +1,17 @@
 import flet as ft
 import re
 from src.exceptions import ProductNotFoundError
+from src.utils.flags import FlagManager
+from src.views.notifications import SnackBarNotifications
+
 
 class CheckStockViewManager:
     def __init__(self, page: ft.Page, cont: ft.Column, stock_controller):
         self.page, self.cont = page, cont
         self.stock_controller = stock_controller
-        self.notification = Notifications(page)
+        self.notification = SnackBarNotifications(page)
         self.components = UIComponents(self)
+        self.flags = FlagManager()
 
         self.data_table = ft.Ref[ft.DataTable]()
 
@@ -39,12 +43,20 @@ class CheckStockViewManager:
     # Handler
     def search_product_handler(self, e):
         barcode = self.barcode_textfield.current.value
+
         if re.fullmatch("[A-Za-z0-9]+", barcode):
-            try:
-                product_name, available_quantity = self.stock_controller.check_product(barcode)
-                self.add_product_to_table(product_name, available_quantity)
-            except ProductNotFoundError:
-                self.notification.snack_bar_error_message("Producto no encontrado.")
+            print(f"conexion: {self.flags.connection_exists}")
+            if self.flags.connection_exists:
+                try:
+                    product_name, available_quantity = self.stock_controller.check_product(barcode)
+                    self.add_product_to_table(product_name, available_quantity)
+
+                except ProductNotFoundError:
+                    self.notification.snack_bar_error_message("Producto no encontrado.")
+                    
+            else:
+                self.notification.snack_bar_error_message("No se detectó una conexión a una base de datos.")
+
         else:
             self.notification.snack_bar_error_message("No se permiten caracteres especiales.")
 
@@ -76,15 +88,15 @@ class UIComponents:
         
         return ft.Container(content=ft.Column([ft.Row([table], alignment=ft.MainAxisAlignment.CENTER)], scroll="auto"), expand=True)
 
-class Notifications:
-    def __init__(self, page):
-        self.page = page
+# class Notifications:
+#     def __init__(self, page):
+#         self.page = page
  
-    #  Notifications: display popup messages for error or success feedback in the UI
-    def snack_bar_error_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message, 
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.RED, duration=2000))
+#     #  Notifications: display popup messages for error or success feedback in the UI
+#     def snack_bar_error_message(self, message):
+#         return self.page.open(ft.SnackBar(ft.Text(value=message, 
+#                                                 color=ft.Colors.WHITE, 
+#                                                 weight=ft.FontWeight.BOLD, 
+#                                                 text_align=ft.TextAlign.CENTER,
+#                                                 size=20
+#                                                 ), bgcolor=ft.Colors.RED, duration=2000))

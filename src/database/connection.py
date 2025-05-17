@@ -1,33 +1,44 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from src.utils.flags import FlagManager
+from sqlalchemy.exc import ArgumentError
+from src.exceptions import InvalidDatabaseURLError
 
 
 class DataBaseConnection:
     _instance = None
 
     def __new__(cls, db_url: str):
-        if not cls._instance: # Singleton
+        if not cls._instance:
+            cls._flag = FlagManager()
             cls._instance = super(DataBaseConnection, cls).__new__(cls)
             cls._instance.db_url = db_url
-            cls._instance.engine = create_engine(db_url)
-            cls._instance.Session = sessionmaker(bind=cls._instance.engine)
-            cls._instance.session = None
+            try:
+                cls._instance.engine = create_engine(db_url)
+                cls._instance.Session = sessionmaker(bind=cls._instance.engine)
+                cls._instance.session = None
+                cls._flag.connection_exists = True
+            except ArgumentError as e:
+                cls._flag.connection_exists = False
+                raise InvalidDatabaseURLError(db_url, original_exception=e)
 
         return cls._instance
 
     def connect(self):
-        if not self.session:
+        try:
             self.session = self.Session()
-            print("conexion establecida")
+            self._flag.connection_exists = True
+        except:
+            self._flag.connection_exists = False
 
     def get_session(self):
-        if not self.session:
-            self.connect()
-            print("Conexión exitosa src/database/connection.py")
+        self.connect()
         return self.session
 
     def close(self):
-        if self.session:
+        try:
             self.session.close()
             self.session = None
-
+            self._flag.connection_exists = False
+        except:
+            self._flag.connection_exists = False

@@ -1,25 +1,38 @@
 from src.views.settings_view import SettingsViewManager
 from src.database.connection import DataBaseConnection
-from src.database.models import initialize_database
 from src.utils.logging_config import controller_logger
-
 from decouple import config
+from src.views.notifications import SnackBarNotifications
+import os
 
 
 class SettingsController:
     def __init__(self, page, cont):
         self.view = SettingsViewManager(page, cont, self)
+        self.notification = SnackBarNotifications(page)
 
     def update_db_url(self, new_url):
         with open('.env', 'w') as f:
             f.write(f"DATABASE_URL={new_url}\n")
+        try:
+            os.environ["DATABASE_URL"] = new_url
 
-        controller_logger.info("Database Updated.")
+            DataBaseConnection._instance = None
+            connection = DataBaseConnection(new_url)
+            connection.db_url = new_url
 
-    def connect_to_new_db(self, e):
-        db_url = config("DATABASE_URL")
-        connection = DataBaseConnection(db_url)
-        connection.connect()
-        controller_logger.info("Connection to new database succesfully.")
-        initialize_database(connection)
-        controller_logger.info("Tables mapped successfully. The mapping process was completed without errors, and all tables were correctly assigned.")
+            controller_logger.info("Database Updated.")
+            self.notification.snack_bar_neutral_message("Base de datos actualizada.")
+
+        except:
+            self.notification.snack_bar_error_message("URL Inválida, inténtelo de nuevo")
+
+    def disconnect(self, e):
+        if self.flag.connection_exists:
+            db_url = config("DATABASE_URL")
+            connection = DataBaseConnection(db_url)
+            connection.close()
+            self.notification.snack_bar_success_message("Desconexión exitosa.")
+        else:
+            self.notification.snack_bar_error_message("No hay una conexión activa.")
+    

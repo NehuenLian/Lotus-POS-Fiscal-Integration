@@ -15,3 +15,8 @@ class TransactionIntegrityError(CustomAppException):
 class DBError(CustomAppException):
     def __init__(self, original_exception=None):
         super().__init__(f"Database Error: {original_exception}")
+
+class InvalidDatabaseURLError(CustomAppException):
+    def __init__(self, db_url, original_exception=None):
+        super().__init__(f"The provided database URL is invalid.\nURL: {db_url}\n\n{original_exception}")
+        self.db_url = db_url

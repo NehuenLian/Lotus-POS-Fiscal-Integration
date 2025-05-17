@@ -1,13 +1,16 @@
 import flet as ft
 import re
 from src.exceptions import ProductNotFoundError
+from src.utils.flags import FlagManager
+from src.views.notifications import SnackBarNotifications
 
 class PriceViewsManager:
     def __init__(self, page: ft.Page, cont: ft.Column, prices_controller):
         self.page, self.cont = page, cont
         self.prices_controller = prices_controller
-        self.notification = Notifications(page)
+        self.notification = SnackBarNotifications(page)
         self.components = UIComponents(self)
+        self.flags = FlagManager()
 
         self.data_table = ft.Ref[ft.DataTable]()
         self.barcode_textfield = ft.Ref[ft.TextField]()
@@ -57,14 +60,22 @@ class PriceViewsManager:
     # Handlers
     def search_product_handler(self, e):
         barcode = self.barcode_textfield.current.value
+
         if re.fullmatch("[A-Za-z0-9]+", barcode):
-            try:
-                id, product_name, actual_price = self.prices_controller.check_product(barcode)
-                self.product_id = id
-                self.add_product_to_table(id, product_name, actual_price)
-                self._build_second_layout()
-            except ProductNotFoundError:
-                self.notification.snack_bar_error_message("Producto no encontrado.")
+
+            if self.flags.connection_exists:
+                try:
+                    id, product_name, actual_price = self.prices_controller.check_product(barcode)
+                    self.product_id = id
+                    self.add_product_to_table(id, product_name, actual_price)
+                    self._build_second_layout()
+                    
+                except ProductNotFoundError:
+                    self.notification.snack_bar_error_message("Producto no encontrado.")
+
+            else:
+                self.notification.snack_bar_error_message("No se detectó una conexión a una base de datos.")
+
         else:
             self.notification.snack_bar_error_message("No se permiten caracteres especiales.")
 
@@ -152,24 +163,3 @@ class UIComponents:
             ft.TextButton("Cancelar", on_click=self.prices_views_manager.cancel_operation),
         ],
         actions_alignment=ft.MainAxisAlignment.END)
-
-class Notifications:
-    def __init__(self, page):
-        self.page = page
- 
-    #  Notifications: display popup messages for error or success feedback in the UI
-    def snack_bar_error_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message, 
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.RED, duration=1000))
-    
-    def snack_bar_success_message(self, message):
-        return self.page.open(ft.SnackBar(ft.Text(value=message,
-                                                color=ft.Colors.WHITE, 
-                                                weight=ft.FontWeight.BOLD, 
-                                                text_align=ft.TextAlign.CENTER,
-                                                size=20
-                                                ), bgcolor=ft.Colors.GREEN, duration=2000))

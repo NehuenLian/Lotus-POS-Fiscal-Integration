@@ -8,7 +8,7 @@ class SalesDetailsDAO:
     def __init__(self, session):
         self.session = session
 
-    def insert_sale_detail(self, sale_id, product_id, quantity, unit_price, subtotal):
+    def insert_sale_detail(self, sale_id, product_id, quantity, unit_price, subtotal): # sales_management.py
         try:
             detail = SalesDetails(db_sale_id=sale_id, db_product_id=product_id, db_quantity=quantity, db_unit_price=unit_price, db_subtotal=subtotal)
             self.session.add(detail)
