@@ -1,7 +1,8 @@
-from src.views.sales_management_views import SalesViewManager
-from src.core.sales_management import SaleManagement, SalePersister, Product
+from src.core.sales_management import Product, SaleManagement, SalePersister
 from src.exceptions import ProductNotFoundError
 from src.utils.logging_config import controller_logger
+from src.views.sales_management_views import SalesViewManager
+
 
 class SalesManagementController:
     def __init__(self, page, cont):

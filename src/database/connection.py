@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from src.utils.flags import FlagManager
 from sqlalchemy.exc import ArgumentError
+from sqlalchemy.orm import sessionmaker
+
 from src.exceptions import InvalidDatabaseURLError
+from src.utils.flags import FlagManager
 
 
 class DataBaseConnection:
@@ -18,6 +19,7 @@ class DataBaseConnection:
                 cls._instance.Session = sessionmaker(bind=cls._instance.engine)
                 cls._instance.session = None
                 cls._flag.connection_exists = True
+
             except ArgumentError as e:
                 cls._flag.connection_exists = False
                 raise InvalidDatabaseURLError(db_url, original_exception=e)

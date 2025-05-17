@@ -1,5 +1,6 @@
 import flet as ft
 
+
 class SettingsViewManager:
     def __init__(self, page: ft.Page, cont: ft.Column, settings_controller):
         self.page, self.cont = page, cont

@@ -1,15 +1,19 @@
-from src.views.settings_view import SettingsViewManager
-from src.database.connection import DataBaseConnection
-from src.utils.logging_config import controller_logger
-from decouple import config
-from src.views.notifications import SnackBarNotifications
 import os
+
+from decouple import config
+
+from src.database.connection import DataBaseConnection
+from src.utils.flags import FlagManager
+from src.utils.logging_config import controller_logger
+from src.views.settings_view import SettingsViewManager
+from src.views.ui_notifications import SnackBarNotifications
 
 
 class SettingsController:
     def __init__(self, page, cont):
         self.view = SettingsViewManager(page, cont, self)
         self.notification = SnackBarNotifications(page)
+        self.flag = FlagManager()
 
     def update_db_url(self, new_url):
         with open('.env', 'w') as f:

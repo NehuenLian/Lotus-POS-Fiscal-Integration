@@ -1,7 +1,8 @@
-from src.views.price_management_views import PriceViewsManager
 from src.core.price_management import PriceManagement
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logging_config import controller_logger
+from src.views.price_management_views import PriceViewsManager
+
 
 class PricesManagementController:
     def __init__(self, page, cont):

@@ -1,8 +1,10 @@
-import flet as ft
 import re
+
+import flet as ft
+
 from src.exceptions import ProductNotFoundError
 from src.utils.flags import FlagManager
-from src.views.notifications import SnackBarNotifications
+from src.views.ui_notifications import SnackBarNotifications
 
 
 class SalesViewManager:

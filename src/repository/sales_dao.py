@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
+
 from src.database.models import Sales, Stock
 from src.exceptions import (DBError, ProductNotFoundError,
                             TransactionIntegrityError)

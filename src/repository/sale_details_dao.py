@@ -1,4 +1,5 @@
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+
 from src.database.models import SalesDetails
 from src.exceptions import DBError, TransactionIntegrityError
 from src.utils.logging_config import data_access_logger

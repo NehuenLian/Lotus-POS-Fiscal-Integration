@@ -17,4 +17,3 @@ class FlagManager:
         if not isinstance(value, bool):
             raise ValueError("")
         self._connection_exists = value
-        print(f"ahora la flag es: {value} desde FlagManager")

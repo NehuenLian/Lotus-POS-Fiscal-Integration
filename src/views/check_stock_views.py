@@ -1,8 +1,10 @@
-import flet as ft
 import re
+
+import flet as ft
+
 from src.exceptions import ProductNotFoundError
 from src.utils.flags import FlagManager
-from src.views.notifications import SnackBarNotifications
+from src.views.ui_notifications import SnackBarNotifications
 
 
 class CheckStockViewManager:
@@ -45,7 +47,6 @@ class CheckStockViewManager:
         barcode = self.barcode_textfield.current.value
 
         if re.fullmatch("[A-Za-z0-9]+", barcode):
-            print(f"conexion: {self.flags.connection_exists}")
             if self.flags.connection_exists:
                 try:
                     product_name, available_quantity = self.stock_controller.check_product(barcode)
@@ -87,16 +88,3 @@ class UIComponents:
             ])
         
         return ft.Container(content=ft.Column([ft.Row([table], alignment=ft.MainAxisAlignment.CENTER)], scroll="auto"), expand=True)
-
-# class Notifications:
-#     def __init__(self, page):
-#         self.page = page
- 
-#     #  Notifications: display popup messages for error or success feedback in the UI
-#     def snack_bar_error_message(self, message):
-#         return self.page.open(ft.SnackBar(ft.Text(value=message, 
-#                                                 color=ft.Colors.WHITE, 
-#                                                 weight=ft.FontWeight.BOLD, 
-#                                                 text_align=ft.TextAlign.CENTER,
-#                                                 size=20
-#                                                 ), bgcolor=ft.Colors.RED, duration=2000))

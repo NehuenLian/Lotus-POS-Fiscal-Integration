@@ -1,5 +1,7 @@
 import flet as ft
+
 from src.controllers.controller import MainController
+
 
 def main(page: ft.Page):
     MainController(page)

@@ -1,7 +1,7 @@
-from src.views.check_stock_views import CheckStockViewManager
 from src.core.check_stock import CheckStock
 from src.exceptions import ProductNotFoundError
 from src.utils.logging_config import controller_logger
+from src.views.check_stock_views import CheckStockViewManager
 
 
 class StockManagementController:
