@@ -19,44 +19,36 @@ This project is based on a layered architecture. Partially decoupled and prepare
 ```text
 POS_MVP/
 ├── src/
-│   ├── __pycache__/
 │   ├── config/
-│   │   └── __pycache__/
 │   ├── controllers/
-│   │   ├── __pycache__/
 │   │   ├── check_stock_controller.py
 │   │   ├── controller.py
 │   │   ├── price_management_controller.py
 │   │   ├── sales_management_controller.py
 │   │   └── settings_controller.py
 │   ├── core/
-│   │   ├── __pycache__/
 │   │   ├── check_stock.py
 │   │   ├── price_management.py
 │   │   └── sales_management.py
 │   ├── database/
-│   │   ├── __pycache__/
 │   │   ├── connection.py
 │   │   ├── models.py
 │   │   └── session_manager.py
 │   ├── repository/
-│   │   ├── __pycache__/
 │   │   ├── sale_details_dao.py
 │   │   ├── sales_dao.py
 │   │   └── stock_dao.py
 │   ├── utils/
-│   │   ├── __pycache__/
 │   │   ├── flags.py
 │   │   └── logging_config.py
-│   └── views/
-│       ├── __pycache__/
-│       ├── check_stock_views.py
-│       ├── general_views.py
-│       ├── price_management_views.py
-│       ├── sales_management_views.py
-│       ├── settings_view.py
-│       ├── ui_notifications.py
-│       └── exceptions.py
+│   ├── views/
+│   │   ├── check_stock_views.py
+│   │   ├── general_views.py
+│   │   ├── price_management_views.py
+│   │   ├── sales_management_views.py
+│   │   ├── settings_view.py
+│   │   └── ui_notifications.py
+│   └── exceptions.py
 ├── tests/
 │   ├── inventory.csv
 │   ├── show_sales.ipynb
