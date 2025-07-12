@@ -41,6 +41,7 @@ class Product: # DTO
     def clear_product_instance_list(cls):
         cls.product_instance_list.clear()
 
+
 class ProductSale:
     productsale_instances = []
 
@@ -96,6 +97,7 @@ class ProductSale:
             subtotal = unit.product.customer_price * occurrence
 
             unit.subtotal = subtotal
+
 
 class SaleManagement:
     def __init__(self):
@@ -193,6 +195,7 @@ class SaleManagement:
         self.compute_total_amount()
         self.remove_duplicates()
         self.get_timestamp()
+
 
 class SalePersister:
     def __init__(self, sale: SaleManagement):

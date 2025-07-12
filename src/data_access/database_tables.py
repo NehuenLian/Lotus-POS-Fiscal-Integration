@@ -7,6 +7,7 @@ from src.data_access import connection
 class Base(DeclarativeBase):
     pass
 
+
 class Stock(Base):
     __tablename__ = 'inventory_stock'
 
@@ -20,6 +21,7 @@ class Stock(Base):
 
     sales_details = relationship("SalesDetails", back_populates="product")
 
+
 class Sales(Base):
     __tablename__ = 'sales'
 
@@ -31,6 +33,7 @@ class Sales(Base):
     db_hour = Column(Time, nullable=False)
 
     details = relationship("SalesDetails", back_populates="sale")
+
 
 class SalesDetails(Base):
     __tablename__ = 'sales_details'
