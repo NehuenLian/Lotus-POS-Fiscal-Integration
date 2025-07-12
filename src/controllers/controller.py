@@ -1,7 +1,9 @@
 from src.controllers.check_stock_controller import StockManagementController
-from src.controllers.price_management_controller import PricesManagementController
-from src.controllers.sales_management_controller import SalesManagementController
-from src.database import connection
+from src.controllers.price_management_controller import \
+    PricesManagementController
+from src.controllers.sales_management_controller import \
+    SalesManagementController
+from src.data_access import connection
 from src.utils.logging_config import controller_logger
 from src.views.general_views import GeneralViewsManager
 

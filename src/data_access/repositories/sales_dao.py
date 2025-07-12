@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
-from src.database.models import Sales, Stock
+
+from src.data_access.database_tables.models import Sales, Stock
 from src.exceptions import (DBError, ProductNotFoundError,
                             TransactionIntegrityError)
 from src.utils.logging_config import data_access_logger

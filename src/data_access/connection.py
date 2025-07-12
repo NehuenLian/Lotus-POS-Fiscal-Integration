@@ -6,7 +6,7 @@ class DataBaseConnection:
     _instance = None
 
     def __new__(cls, db_url: str):
-        if not cls._instance: # Singleton
+        if not cls._instance:
             cls._instance = super(DataBaseConnection, cls).__new__(cls)
             cls._instance.db_url = db_url
             cls._instance.engine = create_engine(db_url)
@@ -22,7 +22,7 @@ class DataBaseConnection:
     def get_session(self):
         if not self.session:
             self.connect()
-            print("Conexión exitosa src/database/connection.py")
+            
         return self.session
 
     def close(self):

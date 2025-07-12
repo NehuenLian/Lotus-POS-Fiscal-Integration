@@ -3,3 +3,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Ignore virtualenv
+venv/
+
+# Ignore .env
+.env
+
+# Ignore logs
+*log

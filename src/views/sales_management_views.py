@@ -1,5 +1,6 @@
 import re
 
+
 class SalesViewManager:
     def __init__(self):
         pass

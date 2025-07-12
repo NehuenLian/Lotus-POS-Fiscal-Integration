@@ -1,5 +1,6 @@
 import re
 
+
 class PriceViewsManager:
     def __init__(self):
         pass

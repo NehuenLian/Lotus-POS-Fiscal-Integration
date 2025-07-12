@@ -1,11 +1,11 @@
 import datetime as dtime
 from collections import Counter
 
-from src.database import connection
-from src.database.session_manager import session_scope
-from src.repository.sale_details_dao import SalesDetailsDAO
-from src.repository.sales_dao import SalesDAO
-from src.repository.stock_dao import StockDAO
+from src.data_access import connection
+from src.data_access.session_manager import session_scope
+from src.data_access.repositories.sale_details_dao import SalesDetailsDAO
+from src.data_access.repositories.sales_dao import SalesDAO
+from src.data_access.repositories.stock_dao import StockDAO
 from src.utils.logging_config import business_logger
 
 
@@ -61,8 +61,8 @@ class ProductSale:
     def __repr__(self) -> str:
         return (
             f"  Producto: {self.product},\n"
-            f"  Cantidad: {self.subquantity},\n"
-            f"  Subtotal: ${self.subtotal},\n"
+            f"  Product: {self.product},\n"
+            f"  Quantity: {self.subquantity},\n"
             f"  ====================\n"
         )
     
@@ -112,12 +112,12 @@ class SaleManagement:
 
     def __repr__(self):
         return (
-                f"  Lista: {self.sale_list},\n"
+                f"  List: {self.sale_list},\n"
                 f"  Total: ${self.amount},\n"
-                f"  Cantidad total de productos: {self.total_quantity},\n"
-                f"  Metodo de pago utilizado: {self.pay_method}\n"
-                f"  Fecha de la venta: {self.sale_date}\n"
-                f"  Hora de la venta: {self.sale_hour}\n"
+                f"  Total Product Quantity: {self.total_quantity},\n"
+                f"  Pay method used: {self.pay_method}\n"
+                f"  Date of sale: {self.sale_date}\n"
+                f"  Hour of sale: {self.sale_hour}\n"
                 )
 
     def clear_sale_list(self):

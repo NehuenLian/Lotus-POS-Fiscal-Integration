@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from src.database.connection import DataBaseConnection
+from src.data_access.connection import DataBaseConnection
 
 
 @contextmanager

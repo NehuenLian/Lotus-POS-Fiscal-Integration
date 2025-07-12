@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, Numeric, String, Time
 from sqlalchemy.orm import DeclarativeBase, relationship
-from src.database import connection
+
+from src.data_access import connection
 
 
 class Base(DeclarativeBase):
