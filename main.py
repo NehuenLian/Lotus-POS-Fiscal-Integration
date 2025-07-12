@@ -1,4 +1,4 @@
-from src.controllers.controller import MainController
+from src.controllers.main_controller import MainController
 
 if __name__ == "__main__":
     main_controller = MainController()

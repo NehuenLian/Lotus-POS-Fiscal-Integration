@@ -1,11 +1,11 @@
-from src.controllers.check_stock_controller import StockManagementController
-from src.controllers.price_management_controller import \
+from src.controllers.stock import StockManagementController
+from src.controllers.prices import \
     PricesManagementController
-from src.controllers.sales_management_controller import \
+from src.controllers.sales import \
     SalesManagementController
 from src.data_access import connection
 from src.utils.logging_config import controller_logger
-from src.views.general_views import GeneralViewsManager
+from src.views.main_views import GeneralViewsManager
 
 
 class MainController:

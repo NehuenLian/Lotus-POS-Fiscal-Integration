@@ -1,7 +1,7 @@
-from src.business_logic.price_management import PriceManagement
+from src.business_logic.prices import PriceManagement
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logging_config import controller_logger
-from src.views.price_management_views import PriceViewsManager
+from src.views.prices import PriceViewsManager
 
 
 class PricesManagementController:
