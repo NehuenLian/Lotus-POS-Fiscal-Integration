@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
 from src.data_access.database_tables import Stock
 from src.exceptions import (DBError, ProductNotFoundError,
                             TransactionIntegrityError)
-from src.utils.logging_config import data_access_logger
+from src.utils.logger_config import data_access_logger
 
 
 class StockDAO:

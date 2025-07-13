@@ -1,7 +1,7 @@
 from src.data_access import connection
 from src.data_access.session_manager import session_scope
 from src.data_access.repositories.stock import StockDAO
-from src.utils.logging_config import business_logger
+from src.utils.logger_config import business_logger
 
 
 class CheckStock:

@@ -1,6 +1,6 @@
 from src.business_logic.check_stock import CheckStock
 from src.exceptions import ProductNotFoundError
-from src.utils.logging_config import controller_logger
+from src.utils.logger_config import controller_logger
 from src.views.check_stock import CheckStockViewManager
 
 

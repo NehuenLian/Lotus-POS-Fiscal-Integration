@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from src.data_access.database_tables import SalesDetails
 from src.exceptions import DBError, TransactionIntegrityError
-from src.utils.logging_config import data_access_logger
+from src.utils.logger_config import data_access_logger
 
 
 class SalesDetailsDAO:
