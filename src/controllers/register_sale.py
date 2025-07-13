@@ -1,7 +1,7 @@
-from src.business_logic.sales import Product, SaleManagement, SalePersister
+from src.business_logic.register_sale import Product, SaleManagement, SalePersister
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logging_config import controller_logger
-from src.views.sales import SalesViewManager
+from src.views.register_sale import SalesViewManager
 
 
 class SalesManagementController:
