@@ -1,5 +1,0 @@
-2025-07-11 21:28:34,622 - use_case - INFO: Program flow started. [SALES MANAGEMENT]
-2025-07-11 21:30:13,346 - use_case - INFO: Program flow started. [SALES MANAGEMENT]
-2025-07-11 21:42:34,590 - use_case - INFO: Program flow started. [CHECKING STOCK]
-2025-07-11 21:42:35,353 - use_case - INFO: User input barcode "7790895000997".
-2025-07-11 21:42:35,360 - use_case - INFO: [IMPORTANT] CHECK STOCK PROCESS SUCCESSFULLY ENDED.

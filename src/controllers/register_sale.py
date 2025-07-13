@@ -80,47 +80,7 @@ class SalesManagementController:
         sale_persister.confirm_transaction()
         controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
 
-    def manage_sale_process(self): 
-        # TODO: Refactor this function when the graphical interface is implemented.  
-        # If any issue arises, comment out lines 15 and 24 in sales_dao.py where  
-        # the exception "raise ProductNotFoundError" is raised, so it is not handled.  
+    def manage_sale_process(self):
+        print("Hola, estas en register_sale")
 
-        extern = True
-        while extern:
-            barcode = self.get_barcode()
-
-            if barcode.lower() == 'c':
-                cancel_choice = self.ask_for_remove_product()
-
-                if cancel_choice.lower() == 's':
-                    intern = True
-                    while intern:
-                        self.remove_product(product)
-                        continue_choice = self.ask_for_continue()
-
-                        if continue_choice == 1:
-                            intern = False
-                            extern = False
-                        elif continue_choice == 2:
-                            continue
-
-                elif cancel_choice.lower() == 'n':
-                    extern = False
-
-            else:
-                product_id = self.get_id(barcode)
-                product = self.get_product(product_id)
-
-        self.update_product_status(product)
-        self.choose_pay_method()
-
-        try:
-            self.complete_sale()
-
-        except ProductNotFoundError as e:
-            self.view.show_message("Un producto a actualizar el stock no fue encontrado.")
-        except TransactionIntegrityError as e:
-            self.view.show_message("Ocurrió un error al ingresar la venta, inténtelo de nuevo.")
-        except Exception as e:
-            self.view.show_message(f"Error inesperado: {e}")
 

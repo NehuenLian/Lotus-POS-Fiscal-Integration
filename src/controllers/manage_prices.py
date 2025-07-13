@@ -52,22 +52,4 @@ class PricesManagementController:
             self.view.show_message(f"Error desconocido: {e}")
 
     def manage_update_prices_process(self):
-        while True:
-            product_properties = self.get_barcode()
-            self.show_product_info(product_properties)
-            new_price = self.choose_new_price(product_properties)
-            confirm_choice = self.confirming_process()
-            if confirm_choice.lower() == 's':
-                controller_logger.info('Changes confirmed.')
-                self.update_price(product_properties, new_price)
-                self.view.show_message(f"El precio de {product_properties[1]} se actualizó correctamente.")
-                controller_logger.info(f'[IMPORTANT] UPDATE SUCCESSFULLY COMPLETED.\n-')
-                self.view.back_menu()
-                break
-            elif confirm_choice.lower() == 'n':
-                controller_logger.info(f'[IMPORTANT] Changes denied. PROCESS ABORTED.\n-')
-                self.view.show_message("Cancelando operación...")
-                self.view.back_menu()
-                break
-            else: # TODO: Remove this "else" when the graphical interface is implemented.
-                print("Ingresa una entrada válida")
+        print("Hola, estas en manage_prices")

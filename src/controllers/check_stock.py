@@ -11,7 +11,7 @@ class StockManagementController:
         self.check_stock = CheckStock()
 
     def manage_check_stock(self):
-        self.view.show_message("El usuario eligió consultar stock.")
+        print("Hola, estas en check_stock")
         barcode = self.view.request_barcode()
         controller_logger.info(f'User input barcode "{barcode}".')
         try:
@@ -19,6 +19,6 @@ class StockManagementController:
             self.view.display_product(product_name, available_quantity)
             controller_logger.info('[IMPORTANT] CHECK STOCK PROCESS SUCCESSFULLY ENDED.')
         except ProductNotFoundError as e:
-            self.view.show_message("Producto no encontrado.")
+            print("Producto no encontrado.")
         except Exception as e:
-            self.view.show_message(f"Error inesperado: {e}")
+            print(f"Error inesperado: {e}")

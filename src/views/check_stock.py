@@ -1,26 +1,18 @@
 import re
+from PySide6.QtWidgets import (
+    QApplication, QWidget, QPushButton, QVBoxLayout,
+    QLabel, QHBoxLayout, QStackedWidget, QFrame
+)
 
-
-class CheckStockViewManager:
+class CheckStockViewManager(QWidget):
     def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Lotus POS")
+        self.resize(1280, 720)
+        print("Hola estas en CheckStockViewManager")
+
+    def request_barcode(self):
         pass
 
-    def show_message(self, message):
-        print(message)
-        
-    def display_product(self, product_name, available_quantity):
-        self.show_message(f"Nombre del producto: {product_name} | Cantidad disponible: {available_quantity}")
-
-    def back_menu(self):
-        self.show_message("-"*30)
-        self.show_message("Volviendo al menú...")
-
-
-    def request_barcode(self):  # TODO: Textfield
-        while True:
-            barcode = input("Ingrese el código del producto o presione V para volver: ")
-            if re.fullmatch("[A-Za-z0-9]+", barcode):
-                barcode = barcode.upper()
-                return barcode
-            else:
-                self.show_message("Entrada inválida, no se permiten caracteres especiales.")
+    def display_product(self):
+        pass

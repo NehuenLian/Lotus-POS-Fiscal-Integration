@@ -1,45 +1,34 @@
-from controllers.check_stock import StockManagementController
+from src.controllers.check_stock import StockManagementController
 from src.controllers.manage_prices import \
     PricesManagementController
-from controllers.register_sale import \
+from src.controllers.register_sale import \
     SalesManagementController
 from src.data_access import connection
 from src.utils.logging_config import controller_logger
 from src.views.main_views import GeneralViewsManager
 
+from PySide6.QtWidgets import (
+    QApplication, QWidget, QPushButton, QVBoxLayout,
+    QLabel, QHBoxLayout, QStackedWidget, QFrame
+)
+
 
 class MainController:
     def __init__(self):
-        self.ui = GeneralViewsManager()
+        self.ui = GeneralViewsManager(self)
 
-    def connect_to_db(self):
-        try:
-            connection.connect()
-            self.ui.show_message("Conexión exitosa src/controllers/controller.py")
-        except:
-            self.ui.show_message(f"Ocurrió un error al conectarse a la base de datos.")
-            raise Exception
+    def check_stock(self):
+        stock_controller = StockManagementController()
+        stock_controller.manage_check_stock()
+        
+    def manage_prices(self):
+        prices_controller = PricesManagementController()
+        prices_controller.manage_update_prices_process()
 
-    def handle_user_choices(self, choice):
-        if choice == '1':
-            a = StockManagementController()
-            a.manage_check_stock()
-        elif choice == '2':
-            b = SalesManagementController()
-            b.manage_sale_process()
-        elif choice == '3':
-            c = PricesManagementController()
-            c.manage_update_prices_process()
-        else:
-            self.ui.show_message("Ingresa una entrada válida.")
-            self.ui.show_message("=============================")
+    def register_sale(self):
+        sales_controller = SalesManagementController()
+        sales_controller.manage_sale_process()
+    
+    def quit_app(self):
+        QApplication.quit()
 
-    def execute(self):
-        try:
-            self.connect_to_db()
-        except Exception as e:
-            self.ui.show_message(f"Algo falló al intentar conectarse a la base de datos. Detalles: {e}")
-        while True:
-            self.ui.show_menu()
-            choice = self.ui.get_user_choice()
-            self.handle_user_choices(choice)
