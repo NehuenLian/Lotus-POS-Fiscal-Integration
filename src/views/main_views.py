@@ -1,9 +1,10 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
-                               QStackedWidget, QVBoxLayout, QWidget, QLabel)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+                               QPushButton, QStackedWidget, QVBoxLayout,
+                               QWidget)
 
 from src.views.check_stock import CheckStockViewManager
-from src.views.manage_prices import PriceViewsManager
+from src.views.manage_prices import PriceViewManager
 from src.views.register_sale import SalesViewManager
 
 
@@ -25,55 +26,55 @@ class GeneralViewsManager(QWidget):
 
     def _set_layout(self):
 
-        self.divider = self.components.divider_line()
-        self.check_stock = self.manage_stock_choice()
-        self.manage_prices = self.manage_price_choice()
-        self.register_sale = self.manage_sales_choice()
-        self.quit = self.manage_quit_choice()
+        divider = self.components.divider_line()
+        check_stock = self._manage_stock_choice()
+        manage_prices = self._manage_price_choice()
+        register_sale = self._manage_sales_choice()
+        quit = self._manage_quit_choice()
 
-        self.sidebar.addWidget(self.check_stock)
-        self.sidebar.addWidget(self.manage_prices)
-        self.sidebar.addWidget(self.register_sale)
+        self.sidebar.addWidget(check_stock)
+        self.sidebar.addWidget(manage_prices)
+        self.sidebar.addWidget(register_sale)
         self.sidebar.addStretch()
-        self.sidebar.addWidget(self.quit)
+        self.sidebar.addWidget(quit)
 
         self.sidebar_widget.setLayout(self.sidebar)
 
         self.stacked_widget.addWidget(CheckStockViewManager())
-        self.stacked_widget.addWidget(PriceViewsManager())
+        self.stacked_widget.addWidget(PriceViewManager())
         self.stacked_widget.addWidget(SalesViewManager())
 
         self.main_window.addWidget(self.sidebar_widget)
-        self.main_window.addWidget(self.divider)
+        self.main_window.addWidget(divider)
         self.main_window.addWidget(self.stacked_widget)
 
-    def manage_stock_choice(self):
-        self.check_stock = self.components.check_stock_button()
-        self.check_stock.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
-        self.check_stock.clicked.connect(self.main_controller.check_stock)
+    def _manage_stock_choice(self):
+        check_stock = self.components.check_stock_button()
+        check_stock.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
+        check_stock.clicked.connect(self.main_controller.check_stock)
 
-        return self.check_stock
+        return check_stock
 
-    def manage_price_choice(self):
-        self.manage_prices = self.components.manage_prices_button()
-        self.manage_prices.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
-        self.manage_prices.clicked.connect(self.main_controller.manage_prices)
+    def _manage_price_choice(self):
+        manage_prices = self.components.manage_prices_button()
+        manage_prices.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
+        manage_prices.clicked.connect(self.main_controller.manage_prices)
 
-        return self.manage_prices
+        return manage_prices
 
-    def manage_sales_choice(self):
-        self.register_sale = self.components.register_sale()
-        self.register_sale.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
-        self.register_sale.clicked.connect(self.main_controller.register_sale)
+    def _manage_sales_choice(self):
+        register_sale = self.components.register_sale()
+        register_sale.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
+        register_sale.clicked.connect(self.main_controller.register_sale)
 
-        return self.register_sale
+        return register_sale
 
-    def manage_quit_choice(self):
-        self.quit = self.components.quit_button()
-        self.quit.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
-        self.quit.clicked.connect(self.main_controller.quit_app)
+    def _manage_quit_choice(self):
+        quit = self.components.quit_button()
+        quit.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
+        quit.clicked.connect(self.main_controller.quit_app)
 
-        return self.quit
+        return quit
 
 
 class UIComponents:

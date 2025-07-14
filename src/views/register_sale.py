@@ -67,7 +67,7 @@ class SalesViewManager(QWidget):
 
         return second_qwidget
     
-    # Individual components handler
+    # Individual components
     def _display_header(self) -> QLabel:
         header_label = self.components.header()
         return header_label

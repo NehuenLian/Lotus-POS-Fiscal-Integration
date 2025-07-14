@@ -1,12 +1,12 @@
 from src.business_logic.manage_prices import PriceManagement
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logger_config import controller_logger
-from src.views.manage_prices import PriceViewsManager
+from src.views.manage_prices import PriceViewManager
 
 
 class PricesManagementController:
     def __init__(self):
-        self.view = PriceViewsManager()
+        self.view = PriceViewManager()
         self.change_prices = PriceManagement()
 
         controller_logger.info('Program flow started. [PRICES MANAGEMENT]')

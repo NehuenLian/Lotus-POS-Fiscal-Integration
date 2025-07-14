@@ -6,7 +6,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QTableWidget, QVBoxLayout, QWidget)
 
 
-class PriceViewsManager(QWidget):
+class PriceViewManager(QWidget):
     def __init__(self):
         super().__init__()
         self.resize(1280, 720)
@@ -67,7 +67,7 @@ class PriceViewsManager(QWidget):
 
         return second_qwidget
     
-    # Individual components handler
+    # Individual components
     def _display_header(self) -> QLabel:
         header_label = self.components.header()
         return header_label
