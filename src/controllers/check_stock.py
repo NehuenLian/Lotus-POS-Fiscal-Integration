@@ -1,14 +1,21 @@
 from src.business_logic.check_stock import CheckStock
 from src.exceptions import ProductNotFoundError
 from src.utils.logger_config import controller_logger
-from src.views.check_stock import CheckStockViewManager
 
 
 class StockManagementController:
     def __init__(self):
         controller_logger.info('Program flow started. [CHECKING STOCK]')
-        self.view = CheckStockViewManager()
+        self._view = None
         self.check_stock = CheckStock()
+
+    @property
+    def view(self):
+        return self._view
+    
+    @view.setter
+    def view(self, view):
+        self._view = view
 
     def manage_check_stock(self):
         print("Hola, estas en check_stock")

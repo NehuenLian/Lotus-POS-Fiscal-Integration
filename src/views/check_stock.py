@@ -7,12 +7,13 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
 
 
 class CheckStockViewManager(QWidget):
-    def __init__(self):
+    def __init__(self, check_stock_controler):
         super().__init__()
         self.resize(1280, 720)
 
         self.components = UIComponents()
         self.main_window = QVBoxLayout(self)
+        self.check_stock_controler = check_stock_controler
 
         self._set_main_layout()
 

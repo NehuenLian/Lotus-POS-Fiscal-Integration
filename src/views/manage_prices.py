@@ -7,12 +7,13 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
 
 
 class PriceViewManager(QWidget):
-    def __init__(self):
+    def __init__(self, prices_views_controller):
         super().__init__()
         self.resize(1280, 720)
 
         self.components = UIComponents()
         self.main_window = QVBoxLayout(self)
+        self.prices_views_controller = prices_views_controller
 
         self._set_main_layout()
 

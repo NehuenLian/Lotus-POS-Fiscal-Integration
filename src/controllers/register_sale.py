@@ -2,14 +2,21 @@ from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logger_config import controller_logger
-from src.views.register_sale import SalesViewManager
 
 
 class SalesManagementController:
     def __init__(self):
         controller_logger.info('Program flow started. [SALES MANAGEMENT]')
-        self.view = SalesViewManager()
+        self._view = None
         self.sale_operation = SaleManagement()
+
+    @property
+    def view(self):
+        return self._view
+    
+    @view.setter
+    def view(self, view):
+        self._view = view
 
     def get_barcode(self) -> int:
         self.view.show_message("El usuario eligió gestionar ventas.")

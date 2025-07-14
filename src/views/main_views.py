@@ -1,3 +1,4 @@
+from tabnanny import check
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
                                QPushButton, QStackedWidget, QVBoxLayout,
@@ -9,7 +10,7 @@ from src.views.register_sale import SalesViewManager
 
 
 class GeneralViewsManager(QWidget):
-    def __init__(self, main_controller):
+    def __init__(self, main_controller, stock_view, price_view, sales_view):
         super().__init__()
         self.setWindowTitle("Lotus POS")
         self.resize(1280, 720)
@@ -21,6 +22,11 @@ class GeneralViewsManager(QWidget):
         self.sidebar = QVBoxLayout()
         self.sidebar_widget = QWidget()
         self.stacked_widget = QStackedWidget()
+
+        # Domain views
+        self.stock_view = stock_view
+        self.price_view = price_view
+        self.sales_view = sales_view
 
         self._set_layout()
 
@@ -40,9 +46,9 @@ class GeneralViewsManager(QWidget):
 
         self.sidebar_widget.setLayout(self.sidebar)
 
-        self.stacked_widget.addWidget(CheckStockViewManager())
-        self.stacked_widget.addWidget(PriceViewManager())
-        self.stacked_widget.addWidget(SalesViewManager())
+        self.stacked_widget.addWidget(self.stock_view)
+        self.stacked_widget.addWidget(self.price_view)
+        self.stacked_widget.addWidget(self.sales_view)
 
         self.main_window.addWidget(self.sidebar_widget)
         self.main_window.addWidget(divider)

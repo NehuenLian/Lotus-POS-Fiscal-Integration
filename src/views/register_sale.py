@@ -7,12 +7,13 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
 
 
 class SalesViewManager(QWidget):
-    def __init__(self):
+    def __init__(self, register_sale_controller):
         super().__init__()
         self.resize(1280, 720)
 
         self.components = UIComponents()
         self.main_window = QVBoxLayout(self)
+        self.register_sale_controller = register_sale_controller
 
         self._set_main_layout()
         

@@ -1,15 +1,21 @@
 from src.business_logic.manage_prices import PriceManagement
 from src.exceptions import ProductNotFoundError, TransactionIntegrityError
 from src.utils.logger_config import controller_logger
-from src.views.manage_prices import PriceViewManager
 
 
 class PricesManagementController:
     def __init__(self):
-        self.view = PriceViewManager()
         self.change_prices = PriceManagement()
-
+        self._view = None
         controller_logger.info('Program flow started. [PRICES MANAGEMENT]')
+
+    @property
+    def view(self):
+        return self._view
+    
+    @view.setter
+    def view(self, view):
+        self._view = view
 
     def get_barcode(self) -> list:
         self.view.show_message("El usuario eligió gestionar precios.")
