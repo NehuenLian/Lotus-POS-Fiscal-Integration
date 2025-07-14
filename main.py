@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QApplication
+
 from src.controllers.main_controller import MainController
 
 if __name__ == "__main__":

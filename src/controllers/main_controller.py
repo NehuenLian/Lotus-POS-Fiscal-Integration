@@ -1,16 +1,13 @@
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+                               QPushButton, QStackedWidget, QVBoxLayout,
+                               QWidget)
+
 from src.controllers.check_stock import StockManagementController
-from src.controllers.manage_prices import \
-    PricesManagementController
-from src.controllers.register_sale import \
-    SalesManagementController
+from src.controllers.manage_prices import PricesManagementController
+from src.controllers.register_sale import SalesManagementController
 from src.data_access import connection
 from src.utils.logger_config import controller_logger
 from src.views.main_views import GeneralViewsManager
-
-from PySide6.QtWidgets import (
-    QApplication, QWidget, QPushButton, QVBoxLayout,
-    QLabel, QHBoxLayout, QStackedWidget, QFrame
-)
 
 
 class MainController:

@@ -12,3 +12,6 @@ venv/
 
 # Ignore logs
 *log
+
+# Ignore testing database
+test_db.db

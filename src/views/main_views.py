@@ -1,11 +1,10 @@
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QPushButton,
+                               QStackedWidget, QVBoxLayout, QWidget, QLabel)
+
 from src.views.check_stock import CheckStockViewManager
 from src.views.manage_prices import PriceViewsManager
 from src.views.register_sale import SalesViewManager
-
-from PySide6.QtWidgets import (
-    QApplication, QWidget, QPushButton, QVBoxLayout,
-    QHBoxLayout, QStackedWidget, QFrame
-)
 
 
 class GeneralViewsManager(QWidget):

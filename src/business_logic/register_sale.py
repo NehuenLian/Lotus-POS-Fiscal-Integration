@@ -2,10 +2,10 @@ import datetime as dtime
 from collections import Counter
 
 from src.data_access import connection
-from src.data_access.session_manager import session_scope
-from src.data_access.repositories.sales_details import SalesDetailsDAO
 from src.data_access.repositories.sales import SalesDAO
+from src.data_access.repositories.sales_details import SalesDetailsDAO
 from src.data_access.repositories.stock import StockDAO
+from src.data_access.session_manager import session_scope
 from src.utils.logger_config import business_logger
 
 
