@@ -1,12 +1,9 @@
 from tabnanny import check
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
                                QPushButton, QStackedWidget, QVBoxLayout,
                                QWidget)
-
-from src.views.check_stock import CheckStockViewManager
-from src.views.manage_prices import PriceViewManager
-from src.views.register_sale import SalesViewManager
 
 
 class GeneralViewsManager(QWidget):
@@ -57,21 +54,18 @@ class GeneralViewsManager(QWidget):
     def _manage_stock_choice(self):
         check_stock = self.components.check_stock_button()
         check_stock.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
-        check_stock.clicked.connect(self.main_controller.check_stock)
 
         return check_stock
 
     def _manage_price_choice(self):
         manage_prices = self.components.manage_prices_button()
         manage_prices.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
-        manage_prices.clicked.connect(self.main_controller.manage_prices)
 
         return manage_prices
 
     def _manage_sales_choice(self):
         register_sale = self.components.register_sale()
         register_sale.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
-        register_sale.clicked.connect(self.main_controller.register_sale)
 
         return register_sale
 

@@ -7,7 +7,6 @@ class PricesManagementController:
     def __init__(self):
         self.change_prices = PriceManagement()
         self._view = None
-        controller_logger.info('Program flow started. [PRICES MANAGEMENT]')
 
     @property
     def view(self):
@@ -16,6 +15,9 @@ class PricesManagementController:
     @view.setter
     def view(self, view):
         self._view = view
+
+    def remove_soon(self, barcode):
+        print(f"Obteniendo producto... {barcode}")
 
     def get_barcode(self) -> list:
         self.view.show_message("El usuario eligió gestionar precios.")

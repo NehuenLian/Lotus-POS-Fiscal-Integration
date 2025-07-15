@@ -5,15 +5,18 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QPushButton, QStackedWidget,
                                QTableWidget, QVBoxLayout, QWidget)
 
+from src.views.shared_components import (display_header, display_send_button,
+                                         display_textfield)
+
 
 class PriceViewManager(QWidget):
-    def __init__(self, prices_views_controller):
+    def __init__(self, manage_prices_controller):
         super().__init__()
         self.resize(1280, 720)
 
         self.components = UIComponents()
         self.main_window = QVBoxLayout(self)
-        self.prices_views_controller = prices_views_controller
+        self.manage_prices_controller = manage_prices_controller
 
         self._set_main_layout()
 
@@ -32,7 +35,7 @@ class PriceViewManager(QWidget):
         header_layout = QHBoxLayout()
         header_qwidget = QWidget()
 
-        header = self._display_header()
+        header = display_header("Gestionar Precios")
 
         header_layout.addWidget(header)
         header_qwidget.setLayout(header_layout)
@@ -40,14 +43,14 @@ class PriceViewManager(QWidget):
         return header_qwidget
 
     def _set_first_layout(self) -> QWidget:
-
         first_layout = QHBoxLayout()
         first_qwidget = QWidget()
 
-        barcode_input_field = self._display_textfield()
-        send_button = self._display_send_button()
+        self.barcode_input_field = display_textfield(self._search_product_handler)
 
-        first_layout.addWidget(barcode_input_field)
+        send_button = display_send_button(self._search_product_handler)
+
+        first_layout.addWidget(self.barcode_input_field)
         first_layout.addWidget(send_button)
         first_layout.addStretch(1)
 
@@ -69,49 +72,20 @@ class PriceViewManager(QWidget):
         return second_qwidget
     
     # Individual components
-    def _display_header(self) -> QLabel:
-        header_label = self.components.header()
-        return header_label
-
-    def _display_textfield(self) -> QLineEdit:
-        input_field = self.components.input_barcode()
-        return input_field
-    
-    def _display_send_button(self) -> QPushButton:
-        button = self.components.send_button()
-        return button
-    
     def _display_table(self) -> QTableWidget:
         table = self.components.info_table()
         return table
+    
+    # Actions handlers
+    def _search_product_handler(self):
+        barcode = self.barcode_input_field.text()
+        self.barcode_input_field.clear()
+        self.manage_prices_controller.remove_soon(barcode)
 
 
 class UIComponents:
     def __init__(self):
         pass
-
-    def header(self):
-        header_label = QLabel("Gestionar Precios")
-        return header_label
-
-    def input_barcode(self) -> QLineEdit:
-        input_field = QLineEdit()
-
-        input_field.setPlaceholderText("Ingrese el código de barras...")
-
-        input_field.setFixedWidth(200)
-        input_field.setFixedHeight(30)
-
-        input_field.setMaxLength(40)
-
-        return input_field
-
-    def send_button(self) -> QPushButton:
-        button = QPushButton("Enviar")
-        button.setFixedWidth(100)
-        button.setFixedHeight(30)
-
-        return button
     
     def info_table(self) -> QTableWidget:
         table = QTableWidget()

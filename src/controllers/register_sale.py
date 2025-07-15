@@ -6,7 +6,6 @@ from src.utils.logger_config import controller_logger
 
 class SalesManagementController:
     def __init__(self):
-        controller_logger.info('Program flow started. [SALES MANAGEMENT]')
         self._view = None
         self.sale_operation = SaleManagement()
 
@@ -17,6 +16,9 @@ class SalesManagementController:
     @view.setter
     def view(self, view):
         self._view = view
+
+    def remove_soon(self, barcode):
+        print(f"Obteniendo producto... {barcode}")
 
     def get_barcode(self) -> int:
         self.view.show_message("El usuario eligió gestionar ventas.")
