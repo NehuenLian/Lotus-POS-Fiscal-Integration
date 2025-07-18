@@ -35,6 +35,6 @@ class MainController:
         self.price_controller.view = self.price_view
         self.sales_controller.view = self.sales_view
     
-    def quit_app(self):
+    def quit_app(self) -> None:
         QApplication.quit()
 
