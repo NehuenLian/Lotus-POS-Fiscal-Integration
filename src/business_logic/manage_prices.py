@@ -8,14 +8,13 @@ class PriceManagement:
     def __init__(self):
         self.connection = connection
 
-        business_logger.info('Program flow started. [PRICE MANAGEMENT]')
-
     def search_product(self, barcode: str):
         with session_scope(self.connection) as session:
             query = StockDAO(session)
-            id, product_name, price = query.select_id_name_price(barcode)
+            id, barcode, product_name, price = query.select_id_name_price(barcode)
             business_logger.info(f'Product found: "{product_name}" (ID: {id}) at ${price}')
-            return [id, product_name, price]
+
+            return id, barcode, product_name, price
 
     def update_prices(self, id: int, new_price: float):
         with session_scope(self.connection) as session:

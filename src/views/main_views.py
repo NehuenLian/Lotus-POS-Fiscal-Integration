@@ -12,7 +12,7 @@ class GeneralViewsManager(QWidget):
         self.setWindowTitle("Lotus POS")
         self.resize(1280, 720)
 
-        self.components = UIComponents()
+        self.components = DomainComponents()
         self.main_controller = main_controller
 
         self.main_window = QHBoxLayout(self)
@@ -27,7 +27,7 @@ class GeneralViewsManager(QWidget):
 
         self._set_layout()
 
-    def _set_layout(self):
+    def _set_layout(self) -> None:
 
         divider = self.components.divider_line()
         check_stock = self._manage_stock_choice()
@@ -51,25 +51,25 @@ class GeneralViewsManager(QWidget):
         self.main_window.addWidget(divider)
         self.main_window.addWidget(self.stacked_widget)
 
-    def _manage_stock_choice(self):
+    def _manage_stock_choice(self) -> QPushButton:
         check_stock = self.components.check_stock_button()
         check_stock.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(0))
 
         return check_stock
 
-    def _manage_price_choice(self):
+    def _manage_price_choice(self) -> QPushButton:
         manage_prices = self.components.manage_prices_button()
         manage_prices.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(1))
 
         return manage_prices
 
-    def _manage_sales_choice(self):
+    def _manage_sales_choice(self) -> QPushButton:
         register_sale = self.components.register_sale()
         register_sale.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
 
         return register_sale
 
-    def _manage_quit_choice(self):
+    def _manage_quit_choice(self) -> QPushButton:
         quit = self.components.quit_button()
         quit.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
         quit.clicked.connect(self.main_controller.quit_app)
@@ -77,27 +77,27 @@ class GeneralViewsManager(QWidget):
         return quit
 
 
-class UIComponents:
+class DomainComponents:
     def __init__(self):
         pass
 
-    def check_stock_button(self) -> object:
+    def check_stock_button(self) -> QPushButton:
         button = QPushButton("Consultar Stock")
         return button
     
-    def manage_prices_button(self) -> object:
+    def manage_prices_button(self) -> QPushButton:
         button = QPushButton("Gestionar Precios")
         return button
 
-    def register_sale(self) -> object:
+    def register_sale(self) -> QPushButton:
         button = QPushButton("Registrar Ventas")
         return button
     
-    def quit_button(self) -> object:
+    def quit_button(self) -> QPushButton:
         button = QPushButton("Salir")
         return button
 
-    def divider_line(self) -> object:
+    def divider_line(self) -> QFrame:
         divider = QFrame()
         divider.setFrameShape(QFrame.VLine)
         divider.setFrameShadow(QFrame.Sunken)
