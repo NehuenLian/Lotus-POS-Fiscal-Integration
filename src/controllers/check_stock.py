@@ -1,28 +1,27 @@
 from src.business_logic.check_stock import CheckStock
 from src.exceptions import ProductNotFoundError
+from src.utils.logger_config import controller_logger
 
 
 class StockManagementController:
     def __init__(self):
-        self._view = None
         self.check_stock = CheckStock()
+        self._view = None
 
     @property
     def view(self):
         return self._view
     
     @view.setter
-    def view(self, view):
+    def view(self, view) -> None:
         self._view = view
 
-    def check_product_existence(self, barcode):
+    def get_product(self, barcode: str) -> None:
         try:
-            product_name, available_quantity = self.check_stock.search_product(barcode)
-            print(product_name, available_quantity)
-            #self.view.display_product(product_name, available_quantity)
+            product_id, product_barcode, product_name, available_quantity = self.check_stock.search_product(barcode)
+            self._view.display_product(product_id, product_barcode, product_name, available_quantity)
 
         except ProductNotFoundError as e:
             print("Producto no encontrado.")
-
         except Exception as e:
             print(f"Error inesperado: {e}")

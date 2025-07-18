@@ -15,7 +15,7 @@ class StockDAO:
         try:
             data_access_logger.warning("Consulting...")
             product = self.session.execute(select(Stock).filter_by(db_barcode=barcode)).scalar_one()
-            return product.db_product_name, product.db_available_quantity
+            return product.id, product.db_barcode, product.db_product_name, product.db_available_quantity
         
         except NoResultFound as e:
             data_access_logger.warning(f'No result found in database for barcode "{barcode}". Exception details: {e}')
@@ -38,13 +38,13 @@ class StockDAO:
             data_access_logger.exception(f'Unexpected database error during data access operation(SELECT). Exception details: {e}')
             raise DBError(original_exception=e)
 
-    def get_product(self, product_id: int): # sales_management.py
+    def get_product(self, barcode: str): # sales_management.py
         try:
-            product = self.session.execute(select(Stock).filter_by(id=product_id)).scalar_one()
+            product = self.session.execute(select(Stock).filter_by(db_barcode=barcode)).scalar_one()
             return product.id, product.db_barcode, product.db_product_name, product.db_available_quantity, product.db_final_price_to_consumer
         
         except NoResultFound as e:
-            raise ProductNotFoundError(barcode_or_id=product_id, original_exception=e)
+            raise ProductNotFoundError(barcode_or_id=barcode, original_exception=e)
         
         except SQLAlchemyError as e:
             data_access_logger.exception(f'Unexpected database error during data access operation(SELECT). Exception details: {e}')
@@ -71,7 +71,7 @@ class StockDAO:
     def select_id_name_price(self, barcode: str): # price_management.py
         try:
             product = self.session.execute(select(Stock).filter_by(db_barcode=barcode)).scalar_one()
-            return product.id, product.db_product_name, product.db_final_price_to_consumer
+            return product.id, product.db_barcode, product.db_product_name, product.db_final_price_to_consumer
         
         except NoResultFound as e:
             data_access_logger.warning(f'No result found in database for barcode "{barcode}". Exception details: {e}')

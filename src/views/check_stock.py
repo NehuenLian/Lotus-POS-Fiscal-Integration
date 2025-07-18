@@ -3,10 +3,11 @@ import re
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QPushButton, QStackedWidget,
-                               QTableView, QTableWidget, QVBoxLayout, QWidget)
+                               QTableView, QTableWidget, QVBoxLayout, QWidget, QTableWidgetItem)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield)
+from typing import Optional
 
 
 class CheckStockViewManager(QWidget):
@@ -14,14 +15,14 @@ class CheckStockViewManager(QWidget):
         super().__init__()
         self.resize(1280, 720)
 
-        self.components = UIComponents()
+        self.components = DomainComponents()
         self.main_window = QVBoxLayout(self)
         self.check_stock_controller = check_stock_controller
 
         self._set_main_layout()
 
     # Set layouts
-    def _set_main_layout(self):
+    def _set_main_layout(self) -> None:
 
         header_layout = self._set_header()
         first_layout = self._set_first_layout()
@@ -31,7 +32,7 @@ class CheckStockViewManager(QWidget):
         self.main_window.addWidget(first_layout)
         self.main_window.addWidget(second_layout)
 
-    def _set_header(self):
+    def _set_header(self) -> QWidget:
         header_layout = QHBoxLayout()
         header_qwidget = QWidget()
 
@@ -77,13 +78,23 @@ class CheckStockViewManager(QWidget):
         return table
     
     # Actions handlers
-    def _search_product_handler(self):
+    def _search_product_handler(self) -> None:
+        
         barcode = self.barcode_input_field.text()
         self.barcode_input_field.clear()
-        self.check_stock_controller.check_product_existence(barcode)
+        self.check_stock_controller.get_product(barcode)
+
+    # Update and manipulate view
+    def display_product(self,product_id: int,product_barcode: Optional[str],product_name: str,available_quantity: Optional[int]) -> None:
+        self.table.setRowCount(0)
+        self.table.insertRow(0)
+        self.table.setItem(0, 0, QTableWidgetItem(str(product_id)))
+        self.table.setItem(0, 1, QTableWidgetItem(product_barcode or ""))
+        self.table.setItem(0, 2, QTableWidgetItem(product_name))
+        self.table.setItem(0, 3, QTableWidgetItem(str(available_quantity) if available_quantity is not None else "0"))
 
 
-class UIComponents:
+class DomainComponents:
     def __init__(self):
         pass
     
