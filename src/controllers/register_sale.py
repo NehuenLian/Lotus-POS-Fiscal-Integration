@@ -6,16 +6,26 @@ from src.utils.logger_config import controller_logger
 
 class SalesManagementController:
     def __init__(self):
-        self._view = None
         self.sale_operation = SaleManagement()
+        self._view = None
 
     @property
     def view(self):
         return self._view
     
     @view.setter
-    def view(self, view):
+    def view(self, view) -> None:
         self._view = view
+
+    def get_product(self, barcode: str) -> None:
+        try:
+            product = self.sale_operation.get_full_product(barcode)
+            self._view.create_view_product(product)
+
+        except ProductNotFoundError as e:
+            print("Producto no encontrado.")
+        except Exception as e:
+            print(f"Error inesperado en get_product (controlador de register_sale): {e}")
 
     def remove_soon(self, barcode):
         print(f"Obteniendo producto... {barcode}")
@@ -36,37 +46,16 @@ class SalesManagementController:
             self.view.show_message("Producto no encontrado.")
         except Exception as e:
             self.view.show_message(f"Error inesperado: {e}")
-
-    def get_product(self, product_id: int) -> Product:
-        try:
-            product = self.sale_operation.get_full_product(product_id)
-            self.view.show_message(f"Se agregó {product.product_name} a la lista de venta.")
-            controller_logger.info(f'"{product.product_name}" added to cart.')
-            return product
-        
-        except ProductNotFoundError:
-            self.view.show_message("Producto no encontrado.")
-        except Exception as e:
-            self.view.show_message(f"Error inesperado: {e}")
     
-    def ask_for_remove_product(self) -> str:
-        self.view.show_message("Se terminó de agregar productos.")
-        cancel_choice = self.view.cancel_product_question()
+    def add_new_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
+        self.sale_operation.create_product(product_id, barcode, product_name, available_quantity, customer_price)
 
-        return cancel_choice
-    
-    def remove_product(self, product: Product):
+    def remove_product(self, id_to_cancel):
         """
-        Handles the process of removing a product from the cart if the user decides not to buy it.
+        Handle the process of removing a product from the cart if the user decides not to buy it.
         """
-        id_to_cancel = self.view.choice_product_for_cancel()
         controller_logger.info(f'User choice to remove product with ID: {id_to_cancel} from cart.')
-        self.sale_operation.cancel_product(id_to_cancel, product)
-        self.view.show_message("Producto anulado.")
-
-    def ask_for_continue(self) -> str:
-        continue_choice = self.view.continue_with_sale()
-        return continue_choice
+        self.sale_operation.cancel_product(id_to_cancel)
     
     def update_product_status(self, product: Product):
         controller_logger.info('Product transitions into a sales-state object')
@@ -90,7 +79,5 @@ class SalesManagementController:
         sale_persister.confirm_transaction()
         controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
 
-    def manage_sale_process(self):
-        print("Hola, estas en register_sale")
 
 

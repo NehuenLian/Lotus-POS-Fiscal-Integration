@@ -125,36 +125,50 @@ class SaleManagement:
     def clear_sale_list(self):
         self.sale_list.clear()
 
-    def verify_barcode(self, barcode: str) -> int:
+    def get_full_product(self, barcode: str) -> Product:
         with session_scope(self.connection) as session:
             query = StockDAO(session)
-            product_id = query.check_product_exists_by_barcode(barcode)
-            if product_id:
-                business_logger.debug(f'Product with (ID:{product_id} verified.)')
-                return product_id
-
-    def get_full_product(self, product_id: int) -> Product:
-        with session_scope(self.connection) as session:
-            query = StockDAO(session)
-            product_id, barcode, product_name, available_quantity, customer_price = query.get_product(product_id)
+            product_id, barcode, product_name, available_quantity, customer_price = query.get_product(barcode)
             product = Product(product_id, barcode, product_name, available_quantity, customer_price)
+
             business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
             if product.product_id:
                 return product
+            
+    def create_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
+        Product(product_id, barcode, product_name, available_quantity, customer_price)
+        business_logger.debug(
+            f"A product was added with the following characteristics: "
+            f"product_id={product_id}, barcode='{barcode}', product_name='{product_name}', "
+            f"available_quantity={available_quantity}, customer_price=${customer_price}"
+        )
+
+    def cancel_product(self, id_to_cancel: int):
+        for unit in Product.product_instance_list[:]:
+            if id_to_cancel == unit.product_id:
+                Product.product_instance_list.remove(unit)
+                business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
+                break
+
+    def set_pay_method(self, method_selected):
+        self.pay_method = method_selected
+        business_logger.info(f'Pay method selected: "{method_selected}"')
 
     def build_product_sale(self, product: Product):
+        """
+        The DTO 'Product' transitions into a sales-state object, acquiring attributes such as 'subtotal' or 'quantity per product' (subquantity).
+        """
         for unit in product.product_instance_list:
             product_sale = ProductSale(unit)
         product_count = product_sale.count_products_in_cart()
         product_sale.count_and_assign_quantity_by_product(product_count)
         product_sale.calculate_and_assign_subtotal_to_each_product(product_count)
 
-    def cancel_product(self, id_to_cancel: int, product: Product):
-        for unit in product.product_instance_list[:]:
-            if id_to_cancel == unit.product_id:
-                product.product_instance_list.remove(unit)
-                business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
-                break
+    def compute_total_quantity(self) -> int: # TODO: refactor
+        total_quantity = len(self.sale_list)
+        self.total_quantity = total_quantity
+        business_logger.info(f'Total quantity: {total_quantity}')
+        return self.total_quantity
         
     def compute_total_amount(self) -> float: # TODO: refactor
         prices = []
@@ -164,12 +178,6 @@ class SaleManagement:
         self.amount = amount
         business_logger.info(f'Sale amount: ${amount}')
         return amount
-
-    def compute_total_quantity(self) -> int: # TODO: refactor
-        total_quantity = len(self.sale_list)
-        self.total_quantity = total_quantity
-        business_logger.info(f'Total quantity: {total_quantity}')
-        return self.total_quantity
     
     def remove_duplicates(self):
         """
@@ -180,10 +188,6 @@ class SaleManagement:
             sale_with_no_duplicates.add(unit)
 
         self.sale_list = list(sale_with_no_duplicates)
-
-    def set_pay_method(self, method_selected):
-        self.pay_method = method_selected
-        business_logger.info(f'Pay method selected: "{method_selected}"')
 
     def get_timestamp(self):
         now = dtime.datetime.now().replace(microsecond=0)
