@@ -10,7 +10,6 @@ from src.views.shared_components import (display_header, display_send_button,
 class SalesViewManager(QWidget):
     def __init__(self, register_sale_controller):
         super().__init__()
-        self.resize(1280, 720)
 
         self.components = DomainComponents()
         self.main_layout = QVBoxLayout(self)
@@ -30,16 +29,17 @@ class SalesViewManager(QWidget):
     def _set_main_layout(self) -> None:
 
         header_layout = self._set_header()
-        first_layout = self._set_search_and_total_layout()
-        second_layout = self._set_table_layout()
+        search_layout = self._set_search_and_total_layout()
+        table_layout = self._set_table_layout()
         third_layout = self._set_payment_selection_layout()
         bottom_layout = self._register_sale_layout()
 
         self.main_layout.addWidget(header_layout)
-        self.main_layout.addWidget(first_layout)
-        self.main_layout.addWidget(second_layout)
+        self.main_layout.addWidget(search_layout)
+        self.main_layout.addWidget(table_layout)
         self.main_layout.addWidget(third_layout)
         self.main_layout.addWidget(bottom_layout)
+        self.main_layout.addStretch(1)
 
     def _set_header(self) -> QWidget:
         header_layout = QHBoxLayout()
@@ -53,38 +53,38 @@ class SalesViewManager(QWidget):
         return header_qwidget
 
     def _set_search_and_total_layout(self) -> QWidget:
-        first_layout = QHBoxLayout()
-        first_qwidget = QWidget()
+        search_layout = QHBoxLayout()
+        search_qwidget = QWidget()
 
         self.barcode_input_field = display_textfield(self._search_product_handler)
         self.total_label = self._display_total_label()
 
         send_button = display_send_button(self._search_product_handler)
 
-        first_layout.addWidget(self.barcode_input_field)
-        first_layout.addWidget(send_button)
-        first_layout.addStretch(1)
-        first_layout.addWidget(self.total_label)
+        search_layout.addWidget(self.barcode_input_field)
+        search_layout.addWidget(send_button)
+        search_layout.addStretch(1)
+        search_layout.addWidget(self.total_label)
 
-        first_qwidget.setLayout(first_layout)
+        search_qwidget.setLayout(search_layout)
 
-        return first_qwidget
+        return search_qwidget
     
     def _set_table_layout(self) -> QWidget:
 
-        second_layout = QVBoxLayout()
-        second_qwidget = QWidget()
+        table_layout = QVBoxLayout()
+        table_qwidget = QWidget()
 
         self.table = self._display_table()
         divider = self._display_divider()
 
-        second_layout.addWidget(self.table, alignment=Qt.AlignHCenter)
-        second_layout.addSpacing(15)
-        second_layout.addWidget(divider)
-        second_layout.addStretch(1)
-        second_qwidget.setLayout(second_layout)
+        table_layout.addWidget(self.table, alignment=Qt.AlignHCenter)
+        table_layout.addSpacing(15)
+        table_layout.addWidget(divider)
+        table_layout.addStretch(1)
+        table_qwidget.setLayout(table_layout)
 
-        return second_qwidget
+        return table_qwidget
     
     def _set_payment_selection_layout(self) -> QWidget:
 
@@ -105,7 +105,6 @@ class SalesViewManager(QWidget):
         buttons_widget.setLayout(buttons_layout)
 
         outer_layout.addWidget(buttons_widget)
-        outer_layout.addStretch(1)
         outer_widget.setLayout(outer_layout)
 
         return outer_widget

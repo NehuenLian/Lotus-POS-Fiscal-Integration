@@ -13,7 +13,6 @@ from typing import Optional
 class CheckStockViewManager(QWidget):
     def __init__(self, check_stock_controller):
         super().__init__()
-        self.resize(1280, 720)
 
         self.components = DomainComponents()
         self.main_window = QVBoxLayout(self)
@@ -25,8 +24,8 @@ class CheckStockViewManager(QWidget):
     def _set_main_layout(self) -> None:
 
         header_layout = self._set_header()
-        first_layout = self._set_first_layout()
-        second_layout = self._set_second_layout()
+        first_layout = self._set_search_layout()
+        second_layout = self._set_table_layout()
 
         self.main_window.addWidget(header_layout)
         self.main_window.addWidget(first_layout)
@@ -43,7 +42,7 @@ class CheckStockViewManager(QWidget):
 
         return header_qwidget
 
-    def _set_first_layout(self) -> QWidget:
+    def _set_search_layout(self) -> QWidget:
         first_layout = QHBoxLayout()
         first_qwidget = QWidget()
 
@@ -59,7 +58,7 @@ class CheckStockViewManager(QWidget):
 
         return first_qwidget
     
-    def _set_second_layout(self) -> QWidget:
+    def _set_table_layout(self) -> QWidget:
 
         second_layout = QVBoxLayout()
         second_qwidget = QWidget()
