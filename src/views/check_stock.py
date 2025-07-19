@@ -1,13 +1,14 @@
 import re
+from typing import Optional
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QPushButton, QStackedWidget,
-                               QTableView, QTableWidget, QVBoxLayout, QWidget, QTableWidgetItem)
+                               QTableView, QTableWidget, QTableWidgetItem,
+                               QVBoxLayout, QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield)
-from typing import Optional
 
 
 class CheckStockViewManager(QWidget):

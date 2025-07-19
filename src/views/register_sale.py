@@ -1,7 +1,8 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QPushButton, QStackedWidget,
-                               QTableWidget, QVBoxLayout, QWidget, QTableWidgetItem)
+                               QTableWidget, QTableWidgetItem, QVBoxLayout,
+                               QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield)

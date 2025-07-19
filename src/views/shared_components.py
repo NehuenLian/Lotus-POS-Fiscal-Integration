@@ -1,6 +1,6 @@
 from typing import Callable
 
-from PySide6.QtWidgets import QLabel, QLineEdit, QPushButton
+from PySide6.QtWidgets import QLabel, QLineEdit, QMessageBox, QPushButton
 
 
 def display_header(label: str) -> QLabel:
@@ -28,3 +28,14 @@ def display_send_button(action: Callable[[], None]) -> QPushButton:
     button.clicked.connect(action)
 
     return button
+
+
+def show_message_box_notification(message: str) -> None:
+    msg_box = QMessageBox()
+    
+    msg_box.setWindowTitle("Notificación")
+    msg_box.setText(message)
+    msg_box.setIcon(QMessageBox.Information)
+    
+    msg_box.addButton("Aceptar", QMessageBox.AcceptRole)
+    msg_box.exec()

@@ -1,12 +1,15 @@
 import re
 from typing import Optional
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
-                               QLabel, QLineEdit, QPushButton, QStackedWidget,
-                               QTableWidget, QVBoxLayout, QWidget, QTableWidgetItem, QMessageBox)
+                               QLabel, QLineEdit, QMessageBox, QPushButton,
+                               QStackedWidget, QTableWidget, QTableWidgetItem,
+                               QVBoxLayout, QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
-                                         display_textfield)
+                                         display_textfield,
+                                         show_message_box_notification)
 
 
 class PriceViewManager(QWidget):
@@ -131,11 +134,10 @@ class PriceViewManager(QWidget):
 
         if choice:
             self.manage_prices_controller.update_price(self.product_id, new_price)
+            show_message_box_notification("El cambio de precio se realizó correctamente.")
+            self._clear_view()
         else:
-            # TODO: Put here another messagebox notifying the price change
-            pass
-        
-        self._clear_view()
+            show_message_box_notification("El cambio de precio fue cancelado.")
 
     # Auxiliar
     def _clear_view(self) -> None:
@@ -201,4 +203,3 @@ class DomainComponents:
         else:
             return False
         
-    # TODO: Make another messagebox that confirms the price update was aborted.
