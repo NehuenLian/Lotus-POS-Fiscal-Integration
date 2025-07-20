@@ -1,6 +1,7 @@
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
-from src.exceptions import ProductNotFoundError, TransactionIntegrityError
+from src.exceptions import (InvalidBarcodeError, ProductNotFoundError,
+                            TransactionIntegrityError)
 from src.utils.logger_config import controller_logger
 
 
@@ -21,7 +22,9 @@ class SalesManagementController:
         try:
             product = self.sale_operation.get_full_product(barcode)
             self._view.create_view_product(product)
-
+        
+        except InvalidBarcodeError:
+            self._view.show_notification_from_controller("El código de barras contiene caracteres inválidos.")
         except ProductNotFoundError as e:
             self._view.show_notification_from_controller("Producto no encontrado.")
         except Exception as e:
@@ -50,6 +53,7 @@ class SalesManagementController:
         controller_logger.info(f'Pay method choosed: {method}')
 
     def complete_sale(self) -> None:
+        self.sale_operation.build_product_sale()
         self.sale_operation.prepare_sale_summary()
         sale_persister = SalePersister(self.sale_operation)
         sale_persister.confirm_transaction()

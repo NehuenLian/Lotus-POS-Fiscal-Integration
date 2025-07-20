@@ -7,6 +7,7 @@ from src.data_access.repositories.sales import SalesDAO
 from src.data_access.repositories.sales_details import SalesDetailsDAO
 from src.data_access.repositories.stock import StockDAO
 from src.data_access.session_manager import session_scope
+from src.exceptions import InvalidBarcodeError
 from src.utils.logger_config import business_logger
 
 
@@ -127,14 +128,19 @@ class SaleManagement:
         self.sale_list.clear()
 
     def get_full_product(self, barcode: str) -> Product:
-        with session_scope(self.connection) as session:
-            query = StockDAO(session)
-            product_id, barcode, product_name, available_quantity, customer_price = query.get_product(barcode)
-            product = Product(product_id, barcode, product_name, available_quantity, customer_price)
 
-            business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
-            if product.product_id:
-                return product
+        if barcode.isalnum():
+
+            with session_scope(self.connection) as session:
+                query = StockDAO(session)
+                product_id, barcode, product_name, available_quantity, customer_price = query.get_product(barcode)
+                product = Product(product_id, barcode, product_name, available_quantity, customer_price)
+
+                business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
+                if product.product_id:
+                    return product
+        else:
+            raise InvalidBarcodeError
             
     def create_product(self, product_id: int, barcode: str, product_name: str, available_quantity: int, customer_price: Decimal) -> None:
         Product(product_id, barcode, product_name, available_quantity, customer_price)
@@ -155,11 +161,11 @@ class SaleManagement:
         self.pay_method = method_selected
         business_logger.info(f'Pay method selected: "{method_selected}"')
 
-    def build_product_sale(self, product: Product) -> None:
+    def build_product_sale(self):
         """
         The DTO 'Product' transitions into a sales-state object, acquiring attributes such as 'subtotal' or 'quantity per product' (subquantity).
         """
-        for unit in product.product_instance_list:
+        for unit in Product.product_instance_list:
             product_sale = ProductSale(unit)
         product_count = product_sale.count_products_in_cart()
         product_sale.count_and_assign_quantity_by_product(product_count)

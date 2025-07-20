@@ -1,5 +1,6 @@
 from src.business_logic.manage_prices import PriceManagement
-from src.exceptions import ProductNotFoundError, TransactionIntegrityError
+from src.exceptions import (InvalidPriceError, ProductNotFoundError,
+                            TransactionIntegrityError)
 from src.utils.logger_config import controller_logger
 
 
@@ -32,6 +33,9 @@ class PricesManagementController:
         try:
             self.change_prices.update_prices(product_id, new_price)
             self._view.show_notification_from_controller("El cambio de precio se realizó correctamente.")
+
+        except InvalidPriceError:
+            self._view.show_notification_from_controller("El nuevo precio no puede ser negativo o menor a $1.")
         except TransactionIntegrityError as e:
             self._view.show_notification_from_controller("Ocurrió un error al actualizar el precio en el registro, inténtelo de nuevo.")
             controller_logger.error(e)

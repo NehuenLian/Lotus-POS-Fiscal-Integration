@@ -1,8 +1,10 @@
 from decimal import Decimal  # Only for typing
+from typing import Tuple
 
 from src.data_access import connection
 from src.data_access.repositories.stock import StockDAO
 from src.data_access.session_manager import session_scope
+from src.exceptions import InvalidPriceError
 from src.utils.logger_config import business_logger
 
 
@@ -10,7 +12,7 @@ class PriceManagement:
     def __init__(self):
         self.connection = connection
 
-    def search_product(self, barcode: str) -> tuple[int, str, str, Decimal]:
+    def search_product(self, barcode: str) -> Tuple[int, str, str, Decimal]:
         with session_scope(self.connection) as session:
             query = StockDAO(session)
             id, barcode, product_name, price = query.select_id_name_price(barcode)
@@ -19,9 +21,20 @@ class PriceManagement:
             return id, barcode, product_name, price
 
     def update_prices(self, id: int, new_price: float):
+
+        if not self._is_price_valid():
+            business_logger.warning(f"Invalid price: {new_price}")
+            raise InvalidPriceError
+
         with session_scope(self.connection) as session:
             query = StockDAO(session)
             query.update_price_in_db(id, new_price)
             business_logger.info(f'Updated price for Product (ID {id}): ${new_price}')
             business_logger.info('[IMPORTANT] PRICE SUCCESSFULLY UPDATED. PROCESS ENDED SUCCESSFULL.\n-')
 
+    # Validations
+    def _is_price_valid (self, new_price: float) -> bool:
+        if new_price >= 1 and isinstance(new_price, float):
+            return True
+        else:
+            return False
