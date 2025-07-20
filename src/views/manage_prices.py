@@ -1,6 +1,4 @@
-import re
-from asyncio import new_event_loop
-from typing import Optional
+from typing import Optional, Tuple
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QDoubleSpinBox, QFrame, QHBoxLayout,
@@ -109,7 +107,7 @@ class PriceViewManager(QWidget):
         divider = self.components.horizontal_divider()
         return divider
     
-    def _display_update_price_form(self) -> tuple[QLabel, QDoubleSpinBox, QPushButton]:
+    def _display_update_price_form(self) -> Tuple[QLabel, QDoubleSpinBox, QPushButton]:
         new_price_label = self.components.input_new_price_label()
         new_price_field = self.components.new_price_field()
         update_price_button = self.components.update_price()

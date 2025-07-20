@@ -1,6 +1,5 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QHBoxLayout, QHeaderView, QTableWidget,
-                               QTableWidgetItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import QHBoxLayout, QHeaderView, QVBoxLayout, QWidget
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield,

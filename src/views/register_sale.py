@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QFrame, QHBoxLayout, QHeaderView, QLabel,
                                QLineEdit, QPushButton, QTableWidget,
@@ -140,7 +142,7 @@ class SalesViewManager(QWidget):
         total_label = self.components.total_sale_label()
         return total_label
     
-    def _display_payment_selection_buttons(self) -> tuple[QLineEdit, QPushButton, QPushButton, QPushButton]:
+    def _display_payment_selection_buttons(self) -> Tuple[QLineEdit, QPushButton, QPushButton, QPushButton]:
         pay_method_label, cash_button, transfer_button, card_button = self.components.pay_method_section()
         
         cash_button.clicked.connect(lambda: self._set_pay_method_handler("Efectivo"))
@@ -149,7 +151,7 @@ class SalesViewManager(QWidget):
 
         return pay_method_label, cash_button, transfer_button, card_button
     
-    def _display_register_sale_button(self) -> tuple[QLabel, QPushButton]:
+    def _display_register_sale_button(self) -> Tuple[QLabel, QPushButton]:
 
         divider = self.components.horizontal_divider()
         register_sale_button = self.components.register_sale_button()
@@ -332,7 +334,7 @@ class DomainComponents:
 
         return line
     
-    def pay_method_section(self) -> tuple[QLabel, QPushButton, QPushButton, QPushButton]:
+    def pay_method_section(self) -> Tuple[QLabel, QPushButton, QPushButton, QPushButton]:
 
         pay_method_label = QLabel("Método de pago:  ")
 
