@@ -5,7 +5,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QLabel, QLineEdit, QMessageBox, QPushButton,
                                QStackedWidget, QTableWidget, QTableWidgetItem,
-                               QVBoxLayout, QWidget)
+                               QVBoxLayout, QWidget, QDoubleSpinBox)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield,
@@ -19,6 +19,8 @@ class PriceViewManager(QWidget):
         self.components = DomainComponents()
         self.main_layout = QVBoxLayout(self)
         self.manage_prices_controller = manage_prices_controller
+
+        self.product_id = None
 
         self._set_main_layout()
 
@@ -104,7 +106,7 @@ class PriceViewManager(QWidget):
         divider = self.components.horizontal_divider()
         return divider
     
-    def _display_update_price_form(self) -> tuple[QLabel, QLineEdit, QPushButton]:
+    def _display_update_price_form(self) -> tuple[QLabel, QDoubleSpinBox, QPushButton]:
         new_price_label = self.components.input_new_price_label()
         new_price_field = self.components.new_price_field()
         update_price_button = self.components.update_price()
@@ -131,15 +133,30 @@ class PriceViewManager(QWidget):
     def _update_price_handler(self) -> None:
         new_price = self.new_price_field.text()
         choice = self.components.confirm_process_message_box()
+        new_price_formatted = self._format_new_price_input(new_price)
 
-        if choice:
-            self.manage_prices_controller.update_price(self.product_id, new_price)
-            show_message_box_notification("El cambio de precio se realizó correctamente.")
+        if self.product_id is None:
+            show_message_box_notification("No se seleccionó ningun producto.")
             self._clear_view()
-        else:
+            return
+
+        if new_price_formatted < 1:
+            show_message_box_notification("El nuevo precio no puede ser negativo o menor a $1.")
+            return
+
+        if not choice:
             show_message_box_notification("El cambio de precio fue cancelado.")
+            return
+
+        self.manage_prices_controller.update_price(self.product_id, new_price_formatted)
+        show_message_box_notification("El cambio de precio se realizó correctamente.")
+        self._clear_view()
 
     # Auxiliar
+    def _format_new_price_input(self, new_price) -> float:
+        new_price_formatted = new_price.replace("$", "")
+        return float(new_price_formatted)
+
     def _clear_view(self) -> None:
         self.table.setRowCount(0)
         self.new_price_field.clear()
@@ -174,12 +191,16 @@ class DomainComponents:
         new_price_label = QLabel("Nuevo precio:  ")
         return new_price_label
     
-    def new_price_field(self) -> QLineEdit:
-        new_price_field = QLineEdit()
-        new_price_field.setPlaceholderText("$...")
+    def new_price_field(self) -> QDoubleSpinBox:
+        new_price_field = QDoubleSpinBox()
+        new_price_field.setPrefix("$")
+        new_price_field.setDecimals(2)
+        new_price_field.setSingleStep(0.01)
+        new_price_field.setMinimum(0.00)
+        new_price_field.setMaximum(999999999.99)
+
         new_price_field.setFixedWidth(200)
         new_price_field.setFixedHeight(30)
-        new_price_field.setMaxLength(40)
 
         return new_price_field
     
