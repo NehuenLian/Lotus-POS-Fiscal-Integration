@@ -23,7 +23,7 @@ data_access_logger.addHandler(console_handler)
 data_access_logger.addHandler(data_access_files_handler)
 data_access_logger.setLevel(logging.WARNING)
 
-controller_logger = logging.getLogger(f'use_case')
+controller_logger = logging.getLogger(f'controller')
 controller_logger.addHandler(console_handler)
 controller_logger.addHandler(controller_file_handler)
 controller_logger.setLevel(logging.INFO)
