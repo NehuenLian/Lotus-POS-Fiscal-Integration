@@ -1,3 +1,4 @@
+from asyncio import new_event_loop
 import re
 from typing import Optional
 
@@ -133,10 +134,15 @@ class PriceViewManager(QWidget):
     def _update_price_handler(self) -> None:
         new_price = self.new_price_field.text()
         choice = self.components.confirm_process_message_box()
-        new_price_formatted = self._format_new_price_input(new_price)
+
+        try:
+            new_price_formatted = self._format_new_price_input(new_price)
+        except ValueError:
+            show_message_box_notification("Ingrese un precio válido.")
+            return
 
         if self.product_id is None:
-            show_message_box_notification("No se seleccionó ningun producto.")
+            show_message_box_notification("No se seleccionó ningún producto.")
             self._clear_view()
             return
 
@@ -149,7 +155,6 @@ class PriceViewManager(QWidget):
             return
 
         self.manage_prices_controller.update_price(self.product_id, new_price_formatted)
-        show_message_box_notification("El cambio de precio se realizó correctamente.")
         self._clear_view()
 
     # Auxiliar
@@ -160,6 +165,9 @@ class PriceViewManager(QWidget):
     def _clear_view(self) -> None:
         self.table.setRowCount(0)
         self.new_price_field.clear()
+
+    def show_notification_from_controller(self, message: str) -> None:
+        show_message_box_notification(message)
 
 class DomainComponents:
     def __init__(self):
@@ -188,7 +196,7 @@ class DomainComponents:
         return line
     
     def input_new_price_label(self) -> QLabel:
-        new_price_label = QLabel("Nuevo precio:  ")
+        new_price_label = QLabel("Nuevo precio (Formato ideal: $0.000.00 o $00.000.00): ")
         return new_price_label
     
     def new_price_field(self) -> QDoubleSpinBox:

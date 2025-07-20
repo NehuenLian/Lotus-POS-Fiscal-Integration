@@ -22,6 +22,7 @@ class StockManagementController:
             self._view.display_product(product_id, product_barcode, product_name, available_quantity)
 
         except ProductNotFoundError as e:
-            print("Producto no encontrado.")
+            self._view.show_notification_from_controller("Producto no encontrado.")
         except Exception as e:
-            print(f"Error inesperado: {e}")
+            self._view.show_notification_from_controller("Ocurrió un error desconocido.")
+            controller_logger.error(e)

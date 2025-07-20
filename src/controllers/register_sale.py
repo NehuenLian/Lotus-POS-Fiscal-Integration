@@ -23,9 +23,10 @@ class SalesManagementController:
             self._view.create_view_product(product)
 
         except ProductNotFoundError as e:
-            print("Producto no encontrado.")
+            self._view.show_notification_from_controller("Producto no encontrado.")
         except Exception as e:
-            print(f"Error inesperado en get_product (controlador de register_sale): {e}")
+            self._view.show_notification_from_controller("Ocurrió un error desconocido.")
+            controller_logger(e)
     
     def add_new_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
         self.sale_operation.create_product(product_id, barcode, product_name, available_quantity, customer_price)
@@ -53,6 +54,7 @@ class SalesManagementController:
         sale_persister = SalePersister(self.sale_operation)
         sale_persister.confirm_transaction()
         controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
+        self._view.show_notification_from_controller("Venta registrada exitosamente.")
 
 
 

@@ -23,16 +23,20 @@ class PricesManagementController:
             return product_id
 
         except ProductNotFoundError as e:
-            print("Producto no encontrado.")
+            self._view.show_notification_from_controller("Producto no encontrado.")
         except Exception as e:
-            print(f"Error inesperado: {e}")
+            self._view.show_notification_from_controller("Ocurrió un error desconocido.")
+            controller_logger.error(e)
     
     def update_price(self, product_id: int, new_price: float):
         try:
             self.change_prices.update_prices(product_id, new_price)
-            print("El cambio de precio se realizó correctamente.")
-
+            self._view.show_notification_from_controller("El cambio de precio se realizó correctamente.")
         except TransactionIntegrityError as e:
-            print(f"Ocurrió un error al actualizar el precio en el registro, inténtalo de nuevo.")
+            self._view.show_notification_from_controller("Ocurrió un error al actualizar el precio en el registro, inténtelo de nuevo.")
+            controller_logger.error(e)
         except Exception as e:
-            print(f"Error desconocido: {e}")
+            self._view.show_notification_from_controller("Ocurrió un error desconocido.")
+            controller_logger.error(e)
+
+            # Capturar aca mas excepciones relacionadas a validaciones del backend y relanzarlas a la view. Solo es una propagacion!

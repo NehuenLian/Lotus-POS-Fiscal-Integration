@@ -5,7 +5,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
-                                         display_textfield)
+                                         display_textfield, show_message_box_notification)
 
 
 class SalesViewManager(QWidget):
@@ -20,8 +20,9 @@ class SalesViewManager(QWidget):
         self.id_idx = {}
 
         # Global access values
-        self.total_label = None
-        self.pay_method_label = None
+        self.total_label = None # Qlabel
+        self.pay_method_label = None # Qlabel
+        self.is_pay_method_selected = False # Boolean
 
         # Display whole view
         self._set_main_layout()
@@ -164,10 +165,20 @@ class SalesViewManager(QWidget):
     def _set_pay_method_handler(self, pay_method: str) -> None:
         self.register_sale_controller.select_pay_method(pay_method)
         self._set_pay_method(pay_method)
+        self.is_pay_method_selected = True
 
     def _register_sale_handler(self):
-        self._clear_view()
+
+        if not self.products:
+            show_message_box_notification("Seleccione al menos un producto.")
+            return
+
+        if not self.is_pay_method_selected:
+            show_message_box_notification("Seleccione un método de pago.")
+            return
+
         self.register_sale_controller.complete_sale()
+        self._clear_view()
 
     # Logic actions
     def _add_new_product(self) -> None:
@@ -281,9 +292,14 @@ class SalesViewManager(QWidget):
                 self.id_idx[product_id] = row
 
     def _clear_view(self) -> None:
+        self.total_label.setText("Total: $0")
+        self.pay_method_label.setText("Método de pago:  ")
         self.id_idx.clear()
         self.products.clear()
         self.table.setRowCount(0)
+
+    def show_notification_from_controller(self, message: str) -> None:
+        show_message_box_notification(message)
 
 class DomainComponents:
     def __init__(self):

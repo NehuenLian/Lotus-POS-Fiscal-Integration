@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
                                QVBoxLayout, QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
-                                         display_textfield)
+                                         display_textfield, show_message_box_notification)
 
 
 class CheckStockViewManager(QWidget):
@@ -92,6 +92,10 @@ class CheckStockViewManager(QWidget):
         self.table.setItem(0, 1, QTableWidgetItem(product_barcode or ""))
         self.table.setItem(0, 2, QTableWidgetItem(product_name))
         self.table.setItem(0, 3, QTableWidgetItem(str(available_quantity) if available_quantity is not None else "0"))
+
+    # Auxiliar
+    def show_notification_from_controller(self, message: str) -> None:
+        show_message_box_notification(message)
 
 
 class DomainComponents:
