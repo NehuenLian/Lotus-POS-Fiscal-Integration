@@ -1,6 +1,7 @@
 from typing import Callable
 
-from PySide6.QtWidgets import QLabel, QLineEdit, QMessageBox, QPushButton, QFrame
+from PySide6.QtWidgets import (QFrame, QLabel, QLineEdit, QMessageBox,
+                               QPushButton)
 
 
 def display_header(label: str) -> QLabel:
