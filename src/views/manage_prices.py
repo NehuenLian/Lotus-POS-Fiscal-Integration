@@ -3,9 +3,8 @@ from asyncio import new_event_loop
 from typing import Optional
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QDoubleSpinBox, QFrame,
-                               QHBoxLayout, QHeaderView, QLabel,
-                               QMessageBox, QPushButton,
+from PySide6.QtWidgets import (QDoubleSpinBox, QFrame, QHBoxLayout,
+                               QHeaderView, QLabel, QMessageBox, QPushButton,
                                QTableWidget, QTableWidgetItem, QVBoxLayout,
                                QWidget)
 
