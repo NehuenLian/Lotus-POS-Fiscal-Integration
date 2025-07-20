@@ -1,14 +1,17 @@
+from decimal import Decimal
+from unicodedata import decimal
 from src.data_access import connection
 from src.data_access.repositories.stock import StockDAO
 from src.data_access.session_manager import session_scope
 from src.utils.logger_config import business_logger
+from decimal import Decimal # Only for typing
 
 
 class PriceManagement:
     def __init__(self):
         self.connection = connection
 
-    def search_product(self, barcode: str):
+    def search_product(self, barcode: str) -> tuple[int, str, str, Decimal]:
         with session_scope(self.connection) as session:
             query = StockDAO(session)
             id, barcode, product_name, price = query.select_id_name_price(barcode)
