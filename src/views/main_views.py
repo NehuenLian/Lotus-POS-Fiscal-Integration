@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
 
 
 class GeneralViewsManager(QWidget):
-    def __init__(self, main_controller, stock_view, price_view, sales_view):
+    def __init__(self, main_controller, stock_view, price_view, sales_view, settings_view):
         super().__init__()
         self.setWindowTitle("Lotus POS")
         self.resize(1280, 720)
@@ -24,6 +24,7 @@ class GeneralViewsManager(QWidget):
         self.stock_view = stock_view
         self.price_view = price_view
         self.sales_view = sales_view
+        self.settings_view = settings_view
 
         self._set_layout()
 
@@ -33,11 +34,13 @@ class GeneralViewsManager(QWidget):
         check_stock = self._manage_stock_choice()
         manage_prices = self._manage_price_choice()
         register_sale = self._manage_sales_choice()
+        settings = self._manage_settings_choice()
         quit = self._manage_quit_choice()
 
         self.sidebar.addWidget(check_stock)
         self.sidebar.addWidget(manage_prices)
         self.sidebar.addWidget(register_sale)
+        self.sidebar.addWidget(settings)
         self.sidebar.addStretch()
         self.sidebar.addWidget(quit)
 
@@ -46,6 +49,7 @@ class GeneralViewsManager(QWidget):
         self.stacked_widget.addWidget(self.stock_view)
         self.stacked_widget.addWidget(self.price_view)
         self.stacked_widget.addWidget(self.sales_view)
+        self.stacked_widget.addWidget(self.settings_view)
 
         self.main_window.addWidget(self.sidebar_widget)
         self.main_window.addWidget(divider)
@@ -68,10 +72,16 @@ class GeneralViewsManager(QWidget):
         register_sale.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(2))
 
         return register_sale
+    
+    def _manage_settings_choice(self) -> QPushButton:
+        settings = self.components.settings()
+        settings.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
+
+        return settings
 
     def _manage_quit_choice(self) -> QPushButton:
         quit = self.components.quit_button()
-        quit.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(3))
+        quit.clicked.connect(lambda: self.stacked_widget.setCurrentIndex(4))
         quit.clicked.connect(self.main_controller.quit_app)
 
         return quit
@@ -91,6 +101,10 @@ class DomainComponents:
 
     def register_sale(self) -> QPushButton:
         button = QPushButton("Registrar Ventas")
+        return button
+    
+    def settings(self) -> QPushButton:
+        button = QPushButton("Ajustes")
         return button
     
     def quit_button(self) -> QPushButton:
