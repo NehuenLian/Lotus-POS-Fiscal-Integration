@@ -2,13 +2,13 @@ import re
 from typing import Optional
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
-                               QLabel, QLineEdit, QPushButton, QStackedWidget,
-                               QTableView, QTableWidget, QTableWidgetItem,
+from PySide6.QtWidgets import (QHBoxLayout, QHeaderView,
+                               QTableWidget, QTableWidgetItem,
                                QVBoxLayout, QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
-                                         display_textfield, show_message_box_notification)
+                                         display_textfield,
+                                         show_message_box_notification)
 
 
 class CheckStockViewManager(QWidget):
@@ -20,6 +20,7 @@ class CheckStockViewManager(QWidget):
         self.check_stock_controller = check_stock_controller
 
         self._set_main_layout()
+
 
     # Set layouts
     def _set_main_layout(self) -> None:
@@ -71,18 +72,21 @@ class CheckStockViewManager(QWidget):
         second_qwidget.setLayout(second_layout)
 
         return second_qwidget
-    
+
+
     # Individual components
     def _display_table(self) -> QTableWidget:
         table = self.components.info_table()
         return table
-    
+
+
     # Actions handlers
     def _search_product_handler(self) -> None:
         
         barcode = self.barcode_input_field.text()
         self.barcode_input_field.clear()
         self.check_stock_controller.get_product(barcode)
+
 
     # Update and manipulate view
     def display_product(self,product_id: int,product_barcode: Optional[str],product_name: str,available_quantity: Optional[int]) -> None:
@@ -92,6 +96,7 @@ class CheckStockViewManager(QWidget):
         self.table.setItem(0, 1, QTableWidgetItem(product_barcode or ""))
         self.table.setItem(0, 2, QTableWidgetItem(product_name))
         self.table.setItem(0, 3, QTableWidgetItem(str(available_quantity) if available_quantity is not None else "0"))
+
 
     # Auxiliar
     def show_notification_from_controller(self, message: str) -> None:

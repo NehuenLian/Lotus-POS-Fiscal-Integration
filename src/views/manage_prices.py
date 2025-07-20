@@ -1,12 +1,13 @@
-from asyncio import new_event_loop
 import re
+from asyncio import new_event_loop
 from typing import Optional
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
-                               QLabel, QLineEdit, QMessageBox, QPushButton,
-                               QStackedWidget, QTableWidget, QTableWidgetItem,
-                               QVBoxLayout, QWidget, QDoubleSpinBox)
+from PySide6.QtWidgets import (QDoubleSpinBox, QFrame,
+                               QHBoxLayout, QHeaderView, QLabel,
+                               QMessageBox, QPushButton,
+                               QTableWidget, QTableWidgetItem, QVBoxLayout,
+                               QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield,
@@ -24,6 +25,7 @@ class PriceViewManager(QWidget):
         self.product_id = None
 
         self._set_main_layout()
+
 
     # Set layouts
     def _set_main_layout(self) -> None:
@@ -97,7 +99,8 @@ class PriceViewManager(QWidget):
         update_price_qwidget.setLayout(update_price_layout)
 
         return update_price_qwidget
-    
+
+  
     # Individual components
     def _display_table(self) -> QTableWidget:
         table = self.components.info_table()
@@ -115,12 +118,14 @@ class PriceViewManager(QWidget):
         update_price_button.clicked.connect(self._update_price_handler)
 
         return new_price_label, new_price_field, update_price_button
-    
+
+
     # Actions handlers
     def _search_product_handler(self) -> None:
         barcode = self.barcode_input_field.text()
         self.barcode_input_field.clear()
         self.product_id = self.manage_prices_controller.get_product(barcode)
+
 
     # Update and manipulate view
     def display_product(self, product_id: int, product_barcode: Optional[str], product_name: str, product_price: Optional[int]) -> None:
@@ -156,6 +161,7 @@ class PriceViewManager(QWidget):
 
         self.manage_prices_controller.update_price(self.product_id, new_price_formatted)
         self._clear_view()
+
 
     # Auxiliar
     def _format_new_price_input(self, new_price) -> float:

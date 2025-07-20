@@ -1,11 +1,12 @@
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QHeaderView,
-                               QLabel, QLineEdit, QPushButton, QStackedWidget,
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QHeaderView,
+                               QLabel, QLineEdit, QPushButton,
                                QTableWidget, QTableWidgetItem, QVBoxLayout,
                                QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
-                                         display_textfield, show_message_box_notification)
+                                         display_textfield,
+                                         show_message_box_notification)
 
 
 class SalesViewManager(QWidget):
@@ -26,7 +27,8 @@ class SalesViewManager(QWidget):
 
         # Display whole view
         self._set_main_layout()
-        
+
+
     # Set layouts
     def _set_main_layout(self) -> None:
 
@@ -124,7 +126,8 @@ class SalesViewManager(QWidget):
         bottom_qwidget.setLayout(bottom_layout)
 
         return bottom_qwidget
-    
+
+
     # Individual components
     def _display_table(self) -> QTableWidget:
         table = self.components.info_table()
@@ -155,6 +158,7 @@ class SalesViewManager(QWidget):
 
         return divider, register_sale_button
 
+
     # Handlers
     def _search_product_handler(self) -> None:
 
@@ -179,6 +183,7 @@ class SalesViewManager(QWidget):
 
         self.register_sale_controller.complete_sale()
         self._clear_view()
+
 
     # Logic actions
     def _add_new_product(self) -> None:
@@ -258,6 +263,7 @@ class SalesViewManager(QWidget):
 
         current_total = sum(subtotals_list)
         self.total_label.setText(f"Total: ${current_total}")
+
 
     # Auxiliar
     def create_view_product(self, product) -> None:

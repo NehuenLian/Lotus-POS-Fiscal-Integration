@@ -1,10 +1,9 @@
-from decimal import Decimal
-from unicodedata import decimal
+from decimal import Decimal  # Only for typing
+
 from src.data_access import connection
 from src.data_access.repositories.stock import StockDAO
 from src.data_access.session_manager import session_scope
 from src.utils.logger_config import business_logger
-from decimal import Decimal # Only for typing
 
 
 class PriceManagement:
