@@ -1,3 +1,6 @@
+import datetime
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
 
@@ -11,7 +14,7 @@ class SalesDAO:
     def __init__(self, session):
         self.session = session
 
-    def insert_sale_record(self, total_quantity, amount, pay_method, sale_date, sale_hour):
+    def insert_sale_record(self, total_quantity: int, amount: Decimal, pay_method: str, sale_date: datetime.date, sale_hour: datetime.time) -> int:
         try:
             sale = Sales(db_purchased_quantity=total_quantity, db_amount=amount, db_payment_method=pay_method, db_date=sale_date, db_hour=sale_hour)
             self.session.add(sale)

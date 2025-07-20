@@ -15,17 +15,17 @@ class DataBaseConnection:
 
         return cls._instance
 
-    def connect(self):
+    def connect(self) -> None:
         if not self.session:
             self.session = self.Session()
 
-    def get_session(self):
+    def get_session(self) -> None:
         if not self.session:
             self.connect()
             
         return self.session
 
-    def close(self):
+    def close(self) -> None:
         if self.session:
             self.session.close()
             self.session = None

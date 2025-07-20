@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from src.data_access.database_tables import SalesDetails
@@ -9,13 +11,15 @@ class SalesDetailsDAO:
     def __init__(self, session):
         self.session = session
 
-    def insert_sale_detail(self, sale_id, product_id, quantity, unit_price, subtotal):
+    def insert_sale_detail(self, sale_id: int, product_id: int, quantity: int, unit_price: Decimal, subtotal: Decimal) -> None:
         try:
             detail = SalesDetails(db_sale_id=sale_id, db_product_id=product_id, db_quantity=quantity, db_unit_price=unit_price, db_subtotal=subtotal)
             self.session.add(detail)
+
         except IntegrityError as e:
             data_access_logger.exception(f'Database integrity constraint violated during data access operation (INSERT). Exception details: {e}')
             raise TransactionIntegrityError(original_exception=e)
+        
         except SQLAlchemyError as e:
             data_access_logger.exception(f'Unexpected database error during data access operation(INSERT). Exception details: {e}')
             raise DBError(original_exception=e)
