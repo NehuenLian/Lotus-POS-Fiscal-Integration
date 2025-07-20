@@ -15,3 +15,9 @@ class TransactionIntegrityError(CustomAppException):
 class DBError(CustomAppException):
     def __init__(self, original_exception=None):
         super().__init__(f"Database Error: {original_exception}")
+
+class InvalidBarcodeError(CustomAppException):
+        pass
+
+class InvalidPriceError(CustomAppException):
+        pass
