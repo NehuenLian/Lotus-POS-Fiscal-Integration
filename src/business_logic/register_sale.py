@@ -7,10 +7,11 @@ from src.data_access.repositories.sales_details import SalesDetailsDAO
 from src.data_access.repositories.stock import StockDAO
 from src.data_access.session_manager import session_scope
 from src.utils.logger_config import business_logger
+from decimal import Decimal
 
 
 class Product: # DTO
-    product_instance_list = [] # TODO: Consider removing this list in the future to reduce redundancy; ProductSale.productsale_instances serves the same purpose.
+    product_instance_list = []
 
     def __init__(self, product_id: int, barcode: str, product_name: str, available_quantity: int, customer_price: float):
         Product.product_instance_list.append(self)
@@ -85,13 +86,13 @@ class ProductSale:
         return product_count
     
     @classmethod
-    def count_and_assign_quantity_by_product(cls, product_count: dict):
+    def count_and_assign_quantity_by_product(cls, product_count: dict) -> None:
         for unit in cls.productsale_instances:
             quantity = product_count[unit.product.product_id] # Gets the count using the id as a index
             unit.subquantity = quantity
             
     @classmethod
-    def calculate_and_assign_subtotal_to_each_product(cls, product_count: dict):
+    def calculate_and_assign_subtotal_to_each_product(cls, product_count: dict) -> None:
         for unit in cls.productsale_instances:
             occurrence = product_count[unit.product.product_id]
             subtotal = unit.product.customer_price * occurrence
@@ -122,7 +123,7 @@ class SaleManagement:
                 f"  Hour of sale: {self.sale_hour}\n"
                 )
 
-    def clear_sale_list(self):
+    def clear_sale_list(self) -> None:
         self.sale_list.clear()
 
     def get_full_product(self, barcode: str) -> Product:
@@ -135,7 +136,7 @@ class SaleManagement:
             if product.product_id:
                 return product
             
-    def create_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
+    def create_product(self, product_id: int, barcode: str, product_name: str, available_quantity: int, customer_price: Decimal) -> None:
         Product(product_id, barcode, product_name, available_quantity, customer_price)
         business_logger.debug(
             f"A product was added with the following characteristics: "
@@ -143,18 +144,18 @@ class SaleManagement:
             f"available_quantity={available_quantity}, customer_price=${customer_price}"
         )
 
-    def cancel_product(self, id_to_cancel: int):
+    def cancel_product(self, id_to_cancel: int) -> None:
         for unit in Product.product_instance_list[:]:
             if id_to_cancel == unit.product_id:
                 Product.product_instance_list.remove(unit)
                 business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
                 break
 
-    def set_pay_method(self, method_selected):
+    def set_pay_method(self, method_selected: str) -> None:
         self.pay_method = method_selected
         business_logger.info(f'Pay method selected: "{method_selected}"')
 
-    def build_product_sale(self, product: Product):
+    def build_product_sale(self, product: Product) -> None:
         """
         The DTO 'Product' transitions into a sales-state object, acquiring attributes such as 'subtotal' or 'quantity per product' (subquantity).
         """
@@ -164,13 +165,13 @@ class SaleManagement:
         product_sale.count_and_assign_quantity_by_product(product_count)
         product_sale.calculate_and_assign_subtotal_to_each_product(product_count)
 
-    def compute_total_quantity(self) -> int: # TODO: refactor
+    def compute_total_quantity(self) -> int:
         total_quantity = len(self.sale_list)
         self.total_quantity = total_quantity
         business_logger.info(f'Total quantity: {total_quantity}')
         return self.total_quantity
         
-    def compute_total_amount(self) -> float: # TODO: refactor
+    def compute_total_amount(self) -> float:
         prices = []
         for unit in self.sale_list:
             prices.append(unit.product.customer_price)
@@ -179,7 +180,7 @@ class SaleManagement:
         business_logger.info(f'Sale amount: ${amount}')
         return amount
     
-    def remove_duplicates(self):
+    def remove_duplicates(self) -> None:
         """
         Removes duplicate instances of products in the sale list, ensuring each product appears only once as a record in the database.
         """
@@ -189,12 +190,12 @@ class SaleManagement:
 
         self.sale_list = list(sale_with_no_duplicates)
 
-    def get_timestamp(self):
+    def get_timestamp(self) -> None:
         now = dtime.datetime.now().replace(microsecond=0)
         self.sale_date = now.date()
         self.sale_hour = now.time().replace(microsecond=0)
 
-    def prepare_sale_summary(self):
+    def prepare_sale_summary(self) -> None:
         self.compute_total_quantity()
         self.compute_total_amount()
         self.remove_duplicates()
@@ -234,7 +235,7 @@ class SalePersister:
         business_logger.info(f'Successfully inserted the record for (Sale ID: {sale_id}) in "Sales" table.')
         return sale_id
 
-    def insert_sale_details(self, sale_id, details_list):
+    def insert_sale_details(self, sale_id: int, details_list: list) -> None:
         insert_detail = SalesDetailsDAO(self.session)
         for product in details_list:
             insert_detail.insert_sale_detail(
@@ -246,7 +247,7 @@ class SalePersister:
                             )
         business_logger.info(f'Successfully inserted the details for (Sale ID: {sale_id}) in "SalesDetails" table.')
 
-    def update_inventory(self, details_list):
+    def update_inventory(self, details_list: list):
         update_inventory = StockDAO(self.session)
         for product in details_list:
             update_inventory.update_stock_table(
@@ -255,7 +256,7 @@ class SalePersister:
                         )
         business_logger.info(f'Existences (Stock table) successfully updated.')
 
-    def confirm_transaction(self):
+    def confirm_transaction(self) -> None:
         """
         Implements the Unit of Work design pattern to ensure atomic sales transactions.
 
