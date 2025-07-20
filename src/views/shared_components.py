@@ -1,6 +1,6 @@
 from typing import Callable
 
-from PySide6.QtWidgets import QLabel, QLineEdit, QMessageBox, QPushButton
+from PySide6.QtWidgets import QLabel, QLineEdit, QMessageBox, QPushButton, QFrame
 
 
 def display_header(label: str) -> QLabel:
@@ -39,3 +39,11 @@ def show_message_box_notification(message: str) -> None:
     
     msg_box.addButton("Aceptar", QMessageBox.AcceptRole)
     msg_box.exec()
+
+
+def horizontal_divider() -> QFrame:
+    line = QFrame()
+    line.setFrameShape(QFrame.HLine)
+    line.setFrameShadow(QFrame.Sunken)
+
+    return line

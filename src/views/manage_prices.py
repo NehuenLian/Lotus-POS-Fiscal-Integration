@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QDoubleSpinBox, QFrame, QHBoxLayout,
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield,
-                                         show_message_box_notification)
+                                         show_message_box_notification, horizontal_divider)
 
 
 class PriceViewManager(QWidget):
@@ -71,7 +71,7 @@ class PriceViewManager(QWidget):
         table_qwidget = QWidget()
 
         self.table = self._display_table()
-        divider = self._display_divider()
+        divider = horizontal_divider()
 
         table_layout.addWidget(self.table, alignment=Qt.AlignHCenter)
         table_layout.addSpacing(15)
@@ -102,10 +102,6 @@ class PriceViewManager(QWidget):
     def _display_table(self) -> QTableWidget:
         table = self.components.info_table()
         return table
-    
-    def _display_divider(self) -> QFrame:
-        divider = self.components.horizontal_divider()
-        return divider
     
     def _display_update_price_form(self) -> Tuple[QLabel, QDoubleSpinBox, QPushButton]:
         new_price_label = self.components.input_new_price_label()
@@ -190,13 +186,6 @@ class DomainComponents:
         table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         return table
-    
-    def horizontal_divider(self) -> QFrame:
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-
-        return line
     
     def input_new_price_label(self) -> QLabel:
         new_price_label = QLabel("Nuevo precio (Formato ideal: $0.000.00 o $00.000.00): ")

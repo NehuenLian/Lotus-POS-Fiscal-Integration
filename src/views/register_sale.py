@@ -7,7 +7,7 @@ from PySide6.QtWidgets import (QFrame, QHBoxLayout, QHeaderView, QLabel,
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield,
-                                         show_message_box_notification)
+                                         show_message_box_notification, horizontal_divider)
 
 
 class SalesViewManager(QWidget):
@@ -81,7 +81,7 @@ class SalesViewManager(QWidget):
         table_qwidget = QWidget()
 
         self.table = self._display_table()
-        divider = self._display_divider()
+        divider = horizontal_divider()
 
         table_layout.addWidget(self.table, alignment=Qt.AlignHCenter)
         table_layout.addSpacing(15)
@@ -134,10 +134,6 @@ class SalesViewManager(QWidget):
         table = self.components.info_table()
         return table
     
-    def _display_divider(self) -> QFrame:
-        divider = self.components.horizontal_divider()
-        return divider
-    
     def _display_total_label(self) -> QLabel:
         total_label = self.components.total_sale_label()
         return total_label
@@ -153,7 +149,7 @@ class SalesViewManager(QWidget):
     
     def _display_register_sale_button(self) -> Tuple[QLabel, QPushButton]:
 
-        divider = self.components.horizontal_divider()
+        divider = horizontal_divider()
         register_sale_button = self.components.register_sale_button()
         register_sale_button.clicked.connect(self._register_sale_handler)
 
@@ -326,13 +322,6 @@ class DomainComponents:
         table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         return table
-    
-    def horizontal_divider(self) -> QFrame:
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-
-        return line
     
     def pay_method_section(self) -> Tuple[QLabel, QPushButton, QPushButton, QPushButton]:
 
