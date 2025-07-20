@@ -22,7 +22,7 @@ class PriceManagement:
 
     def update_prices(self, id: int, new_price: float):
 
-        if not self._is_price_valid():
+        if not self._is_price_valid(new_price):
             business_logger.warning(f"Invalid price: {new_price}")
             raise InvalidPriceError
 
