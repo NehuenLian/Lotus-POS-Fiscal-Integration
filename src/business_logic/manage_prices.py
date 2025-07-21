@@ -34,7 +34,7 @@ class PriceManagement:
 
     # Validations
     def _is_price_valid (self, new_price: float) -> bool:
-        if new_price >= 1 and isinstance(new_price, float):
+        if isinstance(new_price, float) and new_price >= 1:
             return True
         else:
             return False
