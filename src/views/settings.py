@@ -42,7 +42,7 @@ class SettingsViewManager(QWidget):
 
         context_label = self._display_context_label()
         divider = horizontal_divider()
-        db_url_input = self._display_database_input_field()
+        self.db_url_input = self._display_database_input_field()
         connect_to_db_button = self._display_connect_to_db_button()
 
         top_layout = QVBoxLayout()
@@ -50,7 +50,7 @@ class SettingsViewManager(QWidget):
         top_layout.addWidget(divider)
 
         bottom_layout = QHBoxLayout()
-        bottom_layout.addWidget(db_url_input)
+        bottom_layout.addWidget(self.db_url_input)
         bottom_layout.addWidget(connect_to_db_button)
         bottom_layout.addStretch(1)
 
@@ -70,9 +70,15 @@ class SettingsViewManager(QWidget):
     
     def _display_connect_to_db_button(self) -> QPushButton:
         connect_to_db_button = self.components.connect_to_db_button()
-        connect_to_db_button.clicked.connect(self.settings_controller.connect_to_db)
+        connect_to_db_button.clicked.connect(self._connect_to_database_handler)
 
         return connect_to_db_button
+    
+    # Handlers
+    def _connect_to_database_handler(self):
+        db_url = self.db_url_input.text()
+        self.settings_controller.connect_to_db(db_url)
+
 
 class DomainComponents:
     def __init__(self):
