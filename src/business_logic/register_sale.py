@@ -1,8 +1,7 @@
 import datetime as dtime
 from collections import Counter
-from decimal import Decimal
+from decimal import Decimal  # Only for typing
 
-from src.data_access import connection
 from src.data_access.repositories.sales import SalesDAO
 from src.data_access.repositories.sales_details import SalesDetailsDAO
 from src.data_access.repositories.stock import StockDAO
@@ -103,7 +102,6 @@ class ProductSale:
 
 class SaleManagement:
     def __init__(self):
-        self.connection = connection
         self.sale_list = ProductSale.productsale_instances # List of product instances
         
         self.amount = None
@@ -131,7 +129,7 @@ class SaleManagement:
 
         if barcode.isalnum():
 
-            with session_scope(self.connection) as session:
+            with session_scope() as session:
                 query = StockDAO(session)
                 product_id, barcode, product_name, available_quantity, customer_price = query.get_product(barcode)
                 product = Product(product_id, barcode, product_name, available_quantity, customer_price)
@@ -210,8 +208,6 @@ class SaleManagement:
 
 class SalePersister:
     def __init__(self, sale: SaleManagement):
-        self.connection = connection
-        self.session = self.connection.get_session()
         self.sale = sale
 
     def get_products_dict(self) -> list:
@@ -229,8 +225,8 @@ class SalePersister:
         
         return details_list
 
-    def insert_sale(self) -> int:
-        insert_operation = SalesDAO(self.session)
+    def insert_sale(self, session) -> int:
+        insert_operation = SalesDAO(session)
         sale_id = insert_operation.insert_sale_record(
                             self.sale.total_quantity, 
                             self.sale.amount, 
@@ -241,8 +237,8 @@ class SalePersister:
         business_logger.info(f'Successfully inserted the record for (Sale ID: {sale_id}) in "Sales" table.')
         return sale_id
 
-    def insert_sale_details(self, sale_id: int, details_list: list) -> None:
-        insert_detail = SalesDetailsDAO(self.session)
+    def insert_sale_details(self, sale_id: int, details_list: list, session) -> None:
+        insert_detail = SalesDetailsDAO(session)
         for product in details_list:
             insert_detail.insert_sale_detail(
                                 sale_id,
@@ -253,8 +249,8 @@ class SalePersister:
                             )
         business_logger.info(f'Successfully inserted the details for (Sale ID: {sale_id}) in "SalesDetails" table.')
 
-    def update_inventory(self, details_list: list):
-        update_inventory = StockDAO(self.session)
+    def update_inventory(self, details_list: list, session):
+        update_inventory = StockDAO(session)
         for product in details_list:
             update_inventory.update_stock_table(
                             product['product_id'],
@@ -274,11 +270,11 @@ class SalePersister:
             - Clear product and sales lists from memory after a successful transaction.
         """
         business_logger.info(f'Starting final transaction.')
-        with session_scope(self.connection) as session:
+        with session_scope() as session:
             details_list = self.get_products_dict()
-            sale_id = self.insert_sale()
-            self.insert_sale_details(sale_id, details_list)
-            self.update_inventory(details_list)
+            sale_id = self.insert_sale(session)
+            self.insert_sale_details(sale_id, details_list, session)
+            self.update_inventory(details_list, session)
             business_logger.info(f'[IMPORTANT] Transaction: {sale_id} successfully completed.')
 
             # Clear product lists
