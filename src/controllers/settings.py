@@ -1,4 +1,8 @@
+import os
+import sys
+
 from src.business_logic.settings import SettingsManagement
+
 
 class SettingsController:
     def __init__(self):
@@ -13,5 +17,10 @@ class SettingsController:
     def view(self, view) -> None:
         self._view = view
 
-    def connect_to_db(self, db_url: str) -> None:
-        self.settings_management.connect_to_db(db_url)
+    def update_db_url(self, db_url: str) -> None:
+        self.settings_management.update_db_url(db_url)
+
+    def restart_program(self) -> None:
+        """Close and relaunch app"""
+        python = sys.executable
+        os.execl(python, python, *sys.argv)

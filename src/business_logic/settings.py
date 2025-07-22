@@ -1,15 +1,15 @@
-from src.data_access.connection import DataBaseConnection
 from pathlib import Path
+
+from dotenv import set_key
+
+from src.utils.logger_config import business_logger
 
 
 class SettingsManagement:
     def __init__(self):
         pass
 
-    def connect_to_db(self, db_url: str) -> None:
-        BASE_DIR = Path(__file__).resolve().parent
-        DB_PATH = BASE_DIR / "test_db.db"
-
-        db_url = f"sqlite:///{DB_PATH}"
-        connection = DataBaseConnection(db_url)
-        connection.connect()
+    def update_db_url(self, db_url: str) -> None:
+        env_path = Path(".env")  # or absolute path
+        set_key(dotenv_path=env_path, key_to_set="DB_URL", value_to_set=db_url)
+        business_logger.info(f"Database URL successfully updated to: {db_url}")

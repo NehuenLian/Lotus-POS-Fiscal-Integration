@@ -1,4 +1,3 @@
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QHBoxLayout, QLabel, QLineEdit, QPushButton,
                                QVBoxLayout, QWidget)
 
@@ -43,19 +42,21 @@ class SettingsViewManager(QWidget):
         context_label = self._display_context_label()
         divider = horizontal_divider()
         self.db_url_input = self._display_database_input_field()
-        connect_to_db_button = self._display_connect_to_db_button()
+        update_db_url_button = self._display_update_db_url_button()
+        restart_app_button = self._display_restart_button()
 
-        top_layout = QVBoxLayout()
-        top_layout.addWidget(context_label)
-        top_layout.addWidget(divider)
+        section_header_layout = QVBoxLayout()
+        section_header_layout.addWidget(context_label)
+        section_header_layout.addWidget(divider)
 
-        bottom_layout = QHBoxLayout()
-        bottom_layout.addWidget(self.db_url_input)
-        bottom_layout.addWidget(connect_to_db_button)
-        bottom_layout.addStretch(1)
+        input_db_url_layout = QHBoxLayout()
+        input_db_url_layout.addWidget(self.db_url_input)
+        input_db_url_layout.addWidget(update_db_url_button)
+        input_db_url_layout.addStretch(1)
+        input_db_url_layout.addWidget(restart_app_button)
 
-        outer_layout.addLayout(top_layout)
-        outer_layout.addLayout(bottom_layout)
+        outer_layout.addLayout(section_header_layout)
+        outer_layout.addLayout(input_db_url_layout)
         outer_widget.setLayout(outer_layout)
 
         return outer_widget
@@ -68,16 +69,22 @@ class SettingsViewManager(QWidget):
         db_url_input = self.components.database_input_field()
         return db_url_input
     
-    def _display_connect_to_db_button(self) -> QPushButton:
-        connect_to_db_button = self.components.connect_to_db_button()
-        connect_to_db_button.clicked.connect(self._connect_to_database_handler)
+    def _display_update_db_url_button(self) -> QPushButton:
+        update_button = self.components.update_url_button()
+        update_button.clicked.connect(self._update_database_url_handler)
 
-        return connect_to_db_button
+        return update_button
+    
+    def _display_restart_button(self) -> QPushButton:
+        restart_button = self.components.restart_app_button()
+        restart_button.clicked.connect(self.settings_controller.restart_program)
+
+        return restart_button
     
     # Handlers
-    def _connect_to_database_handler(self):
+    def _update_database_url_handler(self):
         db_url = self.db_url_input.text()
-        self.settings_controller.connect_to_db(db_url)
+        self.settings_controller.update_db_url(db_url)
 
 
 class DomainComponents:
@@ -85,7 +92,7 @@ class DomainComponents:
         pass
 
     def section_label(self) -> QLabel:
-        label = QLabel("Conectarse a Base de Datos")
+        label = QLabel("Cambiar de Base de Datos (Reiniciar para aplicar cambios)")
         return label
 
     def database_input_field(self) -> QLineEdit:
@@ -97,9 +104,16 @@ class DomainComponents:
 
         return input_field
     
-    def connect_to_db_button(self) -> QPushButton:
-        connect_button = QPushButton("Conectarse")
-        connect_button.setFixedWidth(100)
-        connect_button.setFixedHeight(30)
+    def update_url_button(self) -> QPushButton:
+        update_button = QPushButton("Actualizar")
+        update_button.setFixedWidth(100)
+        update_button.setFixedHeight(30)
 
-        return connect_button
+        return update_button
+    
+    def restart_app_button(self) -> QPushButton:
+        restart_button = QPushButton("Reiniciar aplicación")
+        restart_button.setFixedWidth(120)
+        restart_button.setFixedHeight(30)
+
+        return restart_button
