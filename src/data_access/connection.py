@@ -6,27 +6,27 @@ class DataBaseConnection:
     _instance = None
 
     def __new__(cls, db_url: str):
-        if not cls._instance:
-            cls._instance = super(DataBaseConnection, cls).__new__(cls)
-            cls._instance.db_url = db_url
-            cls._instance.engine = create_engine(db_url)
-            cls._instance.Session = sessionmaker(bind=cls._instance.engine)
-            cls._instance.session = None
-
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
         return cls._instance
 
+    def __init__(self, db_url: str):
+        if not hasattr(self, 'engine'):
+            self.db_url = db_url
+            self.engine = create_engine(db_url)
+            self.Session = sessionmaker(bind=self.engine)
+            self.session = None
+
     def connect(self) -> None:
-        if not self.session:
+        if self.session is None:
             self.session = self.Session()
 
-    def get_session(self) -> None:
-        if not self.session:
+    def get_session(self):
+        if self.session is None:
             self.connect()
-            
         return self.session
 
     def close(self) -> None:
         if self.session:
             self.session.close()
             self.session = None
-
