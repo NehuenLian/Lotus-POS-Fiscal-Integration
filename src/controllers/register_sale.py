@@ -1,7 +1,6 @@
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
-from src.exceptions import (InvalidBarcodeError, ProductNotFoundError,
-                            TransactionIntegrityError)
+from src.exceptions import InvalidBarcodeError, ProductNotFoundError
 from src.utils.logger_config import controller_logger
 
 

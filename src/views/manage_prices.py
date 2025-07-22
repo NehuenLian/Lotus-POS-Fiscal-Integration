@@ -1,10 +1,9 @@
 from typing import Optional, Tuple
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QDoubleSpinBox, QHBoxLayout,
-                               QHeaderView, QLabel, QMessageBox, QPushButton,
-                               QTableWidget, QTableWidgetItem, QVBoxLayout,
-                               QWidget)
+from PySide6.QtWidgets import (QDoubleSpinBox, QHBoxLayout, QHeaderView,
+                               QLabel, QMessageBox, QPushButton, QTableWidget,
+                               QTableWidgetItem, QVBoxLayout, QWidget)
 
 from src.views.shared_components import (display_header, display_send_button,
                                          display_textfield, horizontal_divider,

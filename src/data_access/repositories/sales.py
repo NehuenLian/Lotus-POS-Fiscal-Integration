@@ -1,8 +1,8 @@
 import datetime
-from decimal import Decimal
+from decimal import Decimal  # Only for typing
 
 from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from src.data_access.database_tables import Sales, Stock
 from src.exceptions import (DBError, ProductNotFoundError,

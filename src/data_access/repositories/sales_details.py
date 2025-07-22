@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal  # Only for typing
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 

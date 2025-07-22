@@ -1,9 +1,5 @@
-from tabnanny import check
-
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-                               QPushButton, QStackedWidget, QVBoxLayout,
-                               QWidget)
+from PySide6.QtWidgets import (QFrame, QHBoxLayout, QPushButton,
+                               QStackedWidget, QVBoxLayout, QWidget)
 
 
 class GeneralViewsManager(QWidget):
