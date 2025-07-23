@@ -1,7 +1,7 @@
 from decimal import Decimal  # Only for typing
 from typing import Tuple
 
-from src.data_access.repositories.stock import StockDAO
+from src.data_access.repositories.manage_prices_dao import ManagePricesDAO
 from src.data_access.session_manager import session_scope
 from src.exceptions import InvalidPriceError
 from src.utils.logger_config import business_logger
@@ -13,7 +13,7 @@ class PriceManagement:
 
     def search_product(self, barcode: str) -> Tuple[int, str, str, Decimal]:
         with session_scope() as session:
-            query = StockDAO(session)
+            query = ManagePricesDAO(session)
             id, barcode, product_name, price = query.select_id_name_price(barcode)
             business_logger.info(f'Product found: "{product_name}" (ID: {id}) at ${price}')
 
@@ -26,7 +26,7 @@ class PriceManagement:
             raise InvalidPriceError
 
         with session_scope() as session:
-            query = StockDAO(session)
+            query = ManagePricesDAO(session)
             query.update_price_in_db(id, new_price)
             business_logger.info(f'Updated price for Product (ID {id}): ${new_price}')
             business_logger.info('[IMPORTANT] PRICE SUCCESSFULLY UPDATED. PROCESS ENDED SUCCESSFULL.\n-')
