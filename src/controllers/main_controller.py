@@ -48,7 +48,6 @@ class MainController:
 
     def _connect_db(self) -> None:
         try:
-            load_dotenv()
             db_url = os.getenv("DB_URL")
             connection = DataBaseConnection(db_url)
             connection.connect()
