@@ -1,3 +1,5 @@
+from sqlalchemy.exc import ArgumentError
+
 from src.business_logic.check_stock import CheckStock
 from src.exceptions import ProductNotFoundError
 from src.utils.logger_config import controller_logger
@@ -23,6 +25,9 @@ class StockManagementController:
 
         except ProductNotFoundError as e:
             self._view.show_notification_from_controller("Producto no encontrado.")
+        except ArgumentError as e:
+            self._view.show_notification_from_controller("No hay una base de datos conectada.")
+            print(f"La url de la base de datos es inválida.")
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
             controller_logger.error(e)

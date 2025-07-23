@@ -1,3 +1,5 @@
+from sqlalchemy.exc import ArgumentError
+
 from src.business_logic.manage_prices import PriceManagement
 from src.exceptions import (InvalidPriceError, ProductNotFoundError,
                             TransactionIntegrityError)
@@ -25,6 +27,9 @@ class PricesManagementController:
 
         except ProductNotFoundError as e:
             self._view.show_notification_from_controller("Producto no encontrado.")
+        except ArgumentError as e:
+            self._view.show_notification_from_controller("No hay una base de datos conectada.")
+            controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
             controller_logger.error(e)
@@ -39,8 +44,9 @@ class PricesManagementController:
         except TransactionIntegrityError as e:
             self._view.show_notification_from_controller("Ocurrió un error al actualizar el precio en el registro, inténtelo de nuevo.")
             controller_logger.error(e)
+        except ArgumentError as e:
+            self._view.show_notification_from_controller("No hay una base de datos conectada.")
+            controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
             controller_logger.error(e)
-
-            # Capturar aca mas excepciones relacionadas a validaciones del backend y relanzarlas a la view. Solo es una propagacion!

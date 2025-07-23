@@ -1,3 +1,5 @@
+from sqlalchemy.exc import ArgumentError
+
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
@@ -26,6 +28,9 @@ class SalesManagementController:
             self._view.show_notification_from_controller("El código de barras contiene caracteres inválidos.")
         except ProductNotFoundError as e:
             self._view.show_notification_from_controller("Producto no encontrado.")
+        except ArgumentError as e:
+            self._view.show_notification_from_controller("No hay una base de datos conectada.")
+            controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
             controller_logger(e)
