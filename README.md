@@ -1,73 +1,108 @@
-## 🧾 Point of Sale System (MVP)
+# Lotus POS
 
-***
-### Stack
+**Lotus POS** is a esktop Point of Sale system designed for small and medium-sized businesses. It allows you to manage sales, inventory, pricing, and database configuration in a simple way.
+
+---
+
+## Main Features
+
+- **Sales Management:** Fast sales registration, product selection by barcode, automatic total calculation, and payment method selection.
+- **Inventory Control:** Instant stock lookup by product.
+- **Price Management:** Search and update product prices.
+- **Flexible Configuration:** Change the database URL from the interface and restart the app to apply changes.
+- **Architecture:** Clear separation between business logic, data access, controllers, and views.
+- **Logging:** Log management for auditing and debugging.
+- **Ready for Fiscal Integration:** Designed to integrate with electronic invoicing middleware (AFIP/ARCA) Argentina.
+
+---
+
+## Tech Stack
+
 - Python
-- SQLAlchemy ORM
-- MySQL/SQLITE
+- SQLAlchemy
+- Pyside6
 
-### Features
-- 🧾 Register sales
-- 📦 Check stock
-- 💰 Update prices
+---
 
-***
-### 🛠️ Architecture
-This project is based on a layered architecture. Partially decoupled and prepared for a potential transition to Clean Architecture:
+## Project Structure
 
-```text
-pos_mvp
-├── logs/
-├── src/
-│   ├── controllers/ # Controllers
-│   ├── core/ # Business logic
-│   ├── database/
-│   │   └── repository/ # DAOs
-│   ├── utils/ # Logging config
-│   ├── views/
-│   └── exceptions.py # Custom exceptions
-├── tests/
-├── .gitignore
-├── main.py
-├── README.md
-└── requirements.txt
+```
+src/
+│
+├── business_logic/      # Business logic (sales, stock, prices, settings)
+├── controllers/         # Module controllers
+├── data_access/         # Database access and management (SQLAlchemy)
+├── utils/               # Utilities and logging configuration
+├── views/               # PySide6 views (UI)
+├── exceptions.py        # Custom exceptions
+└── main.py              # Application entry point
 ```
 
-***
+---
 
-### 🧪 Getting started
+## Installation
 
-1. Clone the repository
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/NehuenLian/POS_MVP
+   cd lotus-pos
+   ```
 
-`git clone <your-repo-url>`
+2. **Create and activate a virtual environment:**
+   ```sh
+   python -m venv venv
+   venv\Scripts\activate
+   ```
 
-`cd pos_mvp`
+3. **Install dependencies:**
+   ```sh
+   pip install -r requirements.txt
+   ```
 
+4. **Configure the database:**
+   - Create a `.env` file in the project root with:
+     ```
+     DB_URL="sqlite:///test_db.db"
+     ```
+     Or use your preferred database URL.
 
-2. Install the dependencies
-   
-`pip install -r requirements.txt`
+---
 
-3. Run the main file
+## Usage
 
-`python main.py`
+1. Run the application:
+   ```sh
+   python src/main.py
+   ```
 
-***
+2. Navigate through the sections from the sidebar:
+   - **Stock Lookup**
+   - **Price Management**
+   - **Sales Registration**
+   - **Settings**
 
-### 📘 How to use
-- This app uses a mock SQLite database, allowing you to test all functionalities effortlessly: `pos_mvp/tests/test_db.db`
+---
 
-- You can find the barcodes to use in `pos_mvp/tests/inventory.csv`.<br>
-  1.  When the program asks you to input a barcode, you can copy any barcode in `inventory.csv` (Example: `7790895000997`) and paste it and press `Enter`.
-  2.  Then, follow the instructions and continue with the app flow.
+## Main Dependencies
 
-- `pos_mvp/tests/show_sales.ipynb`: A Jupyter Notebook is provided where you can run a pre-built SQL statement to view your registered sales.
+- [PySide6](https://pypi.org/project/PySide6/) (GUI)
+- [SQLAlchemy](https://www.sqlalchemy.org/) (ORM)
+- [python-dotenv](https://pypi.org/project/python-dotenv/) (Environment variables)
+- [lxml, zeep, tenacity, ntplib] (for fiscal integration, optional)
 
-- Also, there is a `pos_mvp/tests/database.csv` file (that will be created when you run the app) where you can see all the sales you made. Feel free to use it as needed.
+---
 
-***
-
-### 📄 License
+## License
 
 This project is licensed under the MIT License.  
-See the [LICENSE](./LICENSE) file for more information.
+You are free to use, modify, and distribute the software.
+
+---
+
+## Author
+
+Developed by Nehuen Lian.
+
+---
+
+For questions or suggestions open an issue or contact me!
