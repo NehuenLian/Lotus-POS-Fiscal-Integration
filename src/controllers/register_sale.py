@@ -4,7 +4,7 @@ from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
 from src.utils.logger_config import controller_logger
-from middleware.middle import receive_sale_summary
+from middleware.middle import middleware_controller
 
 
 class SalesManagementController:
@@ -63,8 +63,9 @@ class SalesManagementController:
         self.sale_operation.prepare_sale_summary()
         sale_persister = SalePersister(self.sale_operation)
         sale_list = self.sale_operation.get_sale_list()
-        receive_sale_summary(sale_list)
-        
+
+        middleware_controller(sale_list)
+
         sale_persister.confirm_transaction()
         controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
         self._view.show_notification_from_controller("Venta registrada exitosamente.")
