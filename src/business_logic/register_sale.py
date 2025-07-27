@@ -11,12 +11,14 @@ from src.utils.logger_config import business_logger
 class Product: # DTO
     product_instance_list = []
 
-    def __init__(self, product_id: int, barcode: str, product_name: str, available_quantity: int, customer_price: float):
+    def __init__(self, product_id: int, barcode: str, product_name: str, available_quantity: int, price_excl_vat : Decimal, price_incl_vat : Decimal, customer_price: Decimal):
         Product.product_instance_list.append(self)
         self.product_id = product_id
         self.barcode = barcode
         self.product_name = product_name
         self.available_quantity = available_quantity
+        self.price_excl_vat  = price_excl_vat 
+        self.price_incl_vat  = price_incl_vat 
         self.customer_price = customer_price
 
     def __hash__(self):
@@ -33,6 +35,8 @@ class Product: # DTO
             f"  Barcode: {self.barcode},\n"
             f"  Product Name: {self.product_name},\n"
             f"  Available Quantity: {self.available_quantity},\n"
+            f"  Price whitout taxes: {self.price_excl_vat},\n"
+            f"  Product with taxes: {self.price_incl_vat},\n"
             f"  Customer Price: ${self.customer_price}\n"
         )
     
@@ -48,6 +52,8 @@ class ProductSale:
         self.product = product
         self.subquantity = None
         self.subtotal = None
+        self.subtotal_excl_vat = None
+        self.subtotal_incl_vat = None
         ProductSale.productsale_instances.append(self)
 
     def __hash__(self):
@@ -60,10 +66,12 @@ class ProductSale:
 
     def __repr__(self) -> str:
         return (
-            f"  Producto: {self.product},\n"
-            f"  Product: {self.product},\n"
-            f"  Quantity: {self.subquantity},\n"
-            f"  ====================\n"
+            f"Producto: {self.product},\n"
+            f"Quantity: {self.subquantity},\n"
+            f"Subtotal: {self.subtotal},\n"
+            f"Subtotal excl. VAT: {self.subtotal_excl_vat},\n"
+            f"Subtotal incl. VAT: {self.subtotal_incl_vat},\n"
+            f"====================\n"
         )
     
     @classmethod
@@ -88,7 +96,23 @@ class ProductSale:
         for unit in cls.productsale_instances:
             quantity = product_count[unit.product.product_id] # Gets the count using the id as a index
             unit.subquantity = quantity
-            
+
+    @classmethod
+    def calculate_and_assign_subtotal_excl_vat_to_each_product(cls, product_count: dict) -> None:
+        for unit in cls.productsale_instances:
+            occurrence = product_count[unit.product.product_id]
+            subtotal_excl_vat = unit.product.price_excl_vat * occurrence
+
+            unit.subtotal_excl_vat = subtotal_excl_vat
+
+    @classmethod
+    def calculate_and_assign_subtotal_incl_vat_to_each_product(cls, product_count: dict) -> None:
+        for unit in cls.productsale_instances:
+            occurrence = product_count[unit.product.product_id]
+            subtotal_incl_vat = unit.product.price_incl_vat * occurrence
+
+            unit.subtotal_incl_vat = subtotal_incl_vat
+
     @classmethod
     def calculate_and_assign_subtotal_to_each_product(cls, product_count: dict) -> None:
         for unit in cls.productsale_instances:
@@ -103,6 +127,9 @@ class SaleManagement:
         self.sale_list = ProductSale.productsale_instances # List of product instances
         
         self.amount = None
+        self.amount_excl_vat = None
+        self.amount_incl_vat = None
+
         self.total_quantity = None
         self.pay_method = None
         self.sale_date = None
@@ -112,13 +139,18 @@ class SaleManagement:
 
     def __repr__(self):
         return (
-                f"  List: {self.sale_list},\n"
-                f"  Total: ${self.amount},\n"
-                f"  Total Product Quantity: {self.total_quantity},\n"
-                f"  Pay method used: {self.pay_method}\n"
-                f"  Date of sale: {self.sale_date}\n"
-                f"  Hour of sale: {self.sale_hour}\n"
-                )
+            f"  List: {self.sale_list},\n"
+            f"  Total (Customer Price): ${self.amount},\n"
+            f"  Total excl. VAT: ${self.amount_excl_vat},\n"
+            f"  Total incl. VAT: ${self.amount_incl_vat},\n"
+            f"  Total Product Quantity: {self.total_quantity},\n"
+            f"  Pay method used: {self.pay_method}\n"
+            f"  Date of sale: {self.sale_date}\n"
+            f"  Hour of sale: {self.sale_hour}\n"
+        )
+    
+    def get_sale_list(self):
+        return self.sale_list
 
     def clear_sale_list(self) -> None:
         self.sale_list.clear()
@@ -129,8 +161,8 @@ class SaleManagement:
 
             with session_scope() as session:
                 query = RegisterSaleDAO(session)
-                product_id, barcode, product_name, available_quantity, customer_price = query.get_product(barcode)
-                product = Product(product_id, barcode, product_name, available_quantity, customer_price)
+                product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat , customer_price = query.get_product(barcode)
+                product = Product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
 
                 business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
                 if product.product_id:
@@ -138,8 +170,8 @@ class SaleManagement:
         else:
             raise InvalidBarcodeError
             
-    def create_product(self, product_id: int, barcode: str, product_name: str, available_quantity: int, customer_price: Decimal) -> None:
-        Product(product_id, barcode, product_name, available_quantity, customer_price)
+    def create_product(self, product_id: int, barcode: str, product_name: str, available_quantity: int, price_excl_vat: Decimal, price_incl_vat: Decimal, customer_price: Decimal) -> None:
+        Product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
         business_logger.debug(
             f"A product was added with the following characteristics: "
             f"product_id={product_id}, barcode='{barcode}', product_name='{product_name}', "
@@ -166,6 +198,8 @@ class SaleManagement:
         product_count = product_sale.count_products_in_cart()
         product_sale.count_and_assign_quantity_by_product(product_count)
         product_sale.calculate_and_assign_subtotal_to_each_product(product_count)
+        product_sale.calculate_and_assign_subtotal_excl_vat_to_each_product(product_count)
+        product_sale.calculate_and_assign_subtotal_incl_vat_to_each_product(product_count)
 
     def compute_total_quantity(self) -> int:
         total_quantity = len(self.sale_list)
@@ -182,6 +216,25 @@ class SaleManagement:
         business_logger.info(f'Sale amount: ${amount}')
         return amount
     
+    def compute_total_amount_excl_vat(self) -> float:
+        prices = []
+        for unit in self.sale_list:
+            prices.append(unit.product.price_excl_vat)
+        amount_excl_vat = sum(prices)
+        self.amount_excl_vat = amount_excl_vat
+        business_logger.info(f'Sale amount excl. VAT: ${amount_excl_vat}')
+        return amount_excl_vat
+
+    def compute_total_iva(self) -> float:
+        iva_values = []
+        for unit in self.sale_list:
+            iva = unit.product.price_incl_vat - unit.product.price_excl_vat
+            iva_values.append(iva)
+        total_iva = sum(iva_values)
+        self.total_iva = total_iva
+        business_logger.info(f'Total IVA: ${total_iva}')
+        return total_iva
+
     def remove_duplicates(self) -> None:
         """
         Removes duplicate instances of products in the sale list, ensuring each product appears only once as a record in the database.
@@ -200,6 +253,8 @@ class SaleManagement:
     def prepare_sale_summary(self) -> None:
         self.compute_total_quantity()
         self.compute_total_amount()
+        self.compute_total_amount_excl_vat()
+        self.compute_total_iva()
         self.remove_duplicates()
         self.get_timestamp()
 

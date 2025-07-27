@@ -229,6 +229,8 @@ class SalesViewManager(QWidget):
             self.products[p_id]["product_barcode"],
             self.products[p_id]["product_name"],
             self.products[p_id]["available_quantity"],
+            self.products[p_id]["price_excl_vat"],
+            self.products[p_id]["price_incl_vat"],
             self.products[p_id]["customer_price"],
         )
 
@@ -278,6 +280,8 @@ class SalesViewManager(QWidget):
                 "product_name": product.product_name,
                 "available_quantity": product.available_quantity,
                 "customer_price": product.customer_price,
+                "price_excl_vat" : product.price_excl_vat,
+                "price_incl_vat" : product.price_incl_vat,
                 "quantity" : 1,
                 "subtotal" : product.customer_price,
                 }

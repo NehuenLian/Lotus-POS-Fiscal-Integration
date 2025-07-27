@@ -13,8 +13,8 @@ class Stock(Base):
     db_barcode = Column(String(100), unique=True, nullable=True)
     db_product_name = Column(String(100))
     db_available_quantity = Column(Integer, nullable=True)
-    db_price_excluding_tax = Column(Numeric(7, 2), nullable=True)
-    db_price_including_tax = Column(Numeric(7, 2), nullable=True)
+    db_price_excl_vat = Column(Numeric(7, 2), nullable=True)
+    db_price_incl_vat = Column(Numeric(7, 2), nullable=True)
     db_final_price_to_consumer = Column(Numeric(7, 2), nullable=False)
 
     sales_details = relationship("SalesDetails", back_populates="product")
@@ -46,6 +46,3 @@ class SalesDetails(Base):
     sale = relationship("Sales", back_populates="details")
     product = relationship("Stock", back_populates="sales_details")
 
-
-def initialize_database(connection):
-    Base.metadata.create_all(connection.engine)

@@ -15,10 +15,10 @@ class RegisterSaleDAO:
     def __init__(self, session):
         self.session = session
 
-    def get_product(self, barcode: str) -> Tuple[int, str, str, int, Decimal]:
+    def get_product(self, barcode: str) -> Tuple[int, str, str, int, Decimal, Decimal, Decimal]:
         try:
             product = self.session.execute(select(Stock).filter_by(db_barcode=barcode)).scalar_one()
-            return product.id, product.db_barcode, product.db_product_name, product.db_available_quantity, product.db_final_price_to_consumer
+            return product.id, product.db_barcode, product.db_product_name, product.db_available_quantity, product.db_price_excl_vat, product.db_price_incl_vat, product.db_final_price_to_consumer
         
         except NoResultFound as e:
             raise ProductNotFoundError(barcode_or_id=barcode, original_exception=e)

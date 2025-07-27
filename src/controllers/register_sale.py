@@ -4,6 +4,7 @@ from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
 from src.utils.logger_config import controller_logger
+from middleware.middle import receive_sale_summary
 
 
 class SalesManagementController:
@@ -22,6 +23,7 @@ class SalesManagementController:
     def get_product(self, barcode: str) -> None:
         try:
             product = self.sale_operation.get_full_product(barcode)
+            print(product)
             self._view.create_view_product(product)
         
         except InvalidBarcodeError:
@@ -35,8 +37,8 @@ class SalesManagementController:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
             controller_logger(e)
     
-    def add_new_product(self, product_id, barcode, product_name, available_quantity, customer_price): # Frontend
-        self.sale_operation.create_product(product_id, barcode, product_name, available_quantity, customer_price)
+    def add_new_product(self, product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price): # Frontend
+        self.sale_operation.create_product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
 
     def remove_product(self, id_to_cancel: int) -> None:
         """
@@ -60,6 +62,9 @@ class SalesManagementController:
         self.sale_operation.build_product_sale()
         self.sale_operation.prepare_sale_summary()
         sale_persister = SalePersister(self.sale_operation)
+        sale_list = self.sale_operation.get_sale_list()
+        receive_sale_summary(sale_list)
+        
         sale_persister.confirm_transaction()
         controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
         self._view.show_notification_from_controller("Venta registrada exitosamente.")
