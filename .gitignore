@@ -15,3 +15,20 @@ venv/
 
 # Ignore testing database
 test_db.db
+
+# Ignore cryptography files
+service/certificates/*
+!service/certificates/.gitkeep
+!service/certificates/README.md
+
+# Ignore cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore XML files
+*.xml
+
+# Ignore cms files
+*.cms
