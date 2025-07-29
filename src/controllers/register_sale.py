@@ -1,6 +1,6 @@
 from sqlalchemy.exc import ArgumentError
 
-from middleware.middle import middleware_controller
+from integration.bridge import middleware_controller
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError

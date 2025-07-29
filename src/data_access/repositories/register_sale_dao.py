@@ -45,9 +45,17 @@ class RegisterSaleDAO:
             data_access_logger.exception(f'Unexpected database error during data access operation(FULL TRANSACTION:SELECT, UPDATE). Exception details: {e}')
             raise DBError(original_exception=e)
         
-    def insert_sale_record(self, total_quantity: int, amount: Decimal, pay_method: str, sale_date: datetime.date, sale_hour: datetime.time) -> int:
+    def insert_sale_record(self, total_quantity: int, amount: Decimal, amount_excl_vat: Decimal, amount_only_vat: Decimal, pay_method: str, sale_date: datetime.date, sale_hour: datetime.time) -> int:
         try:
-            sale = Sales(db_purchased_quantity=total_quantity, db_amount=amount, db_payment_method=pay_method, db_date=sale_date, db_hour=sale_hour)
+            sale = Sales(db_purchased_quantity=total_quantity, 
+                        db_amount=amount,
+                        db_net_amount=amount_excl_vat,
+                        db_total_iva_amount=amount_only_vat,
+                        db_payment_method=pay_method, 
+                        db_date=sale_date, 
+                        db_hour=sale_hour,
+                        db_is_invoiced=False,
+                    )
             self.session.add(sale)
             self.session.flush()
             return sale.id
@@ -62,7 +70,12 @@ class RegisterSaleDAO:
         
     def insert_sale_detail(self, sale_id: int, product_id: int, quantity: int, unit_price: Decimal, subtotal: Decimal) -> None:
         try:
-            detail = SalesDetails(db_sale_id=sale_id, db_product_id=product_id, db_quantity=quantity, db_unit_price=unit_price, db_subtotal=subtotal)
+            detail = SalesDetails(db_sale_id=sale_id, 
+                                db_product_id=product_id, 
+                                db_quantity=quantity, 
+                                db_unit_price=unit_price, 
+                                db_subtotal=subtotal
+                            )
             self.session.add(detail)
 
         except IntegrityError as e:

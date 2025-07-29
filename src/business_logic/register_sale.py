@@ -128,7 +128,7 @@ class SaleManagement:
         
         self.amount = None
         self.amount_excl_vat = None
-        self.amount_incl_vat = None
+        self.amount_only_vat = None
 
         self.total_quantity = None
         self.pay_method = None
@@ -142,7 +142,7 @@ class SaleManagement:
             f"  List: {self.sale_list},\n"
             f"  Total (Customer Price): ${self.amount},\n"
             f"  Total excl. VAT: ${self.amount_excl_vat},\n"
-            f"  Total incl. VAT: ${self.amount_incl_vat},\n"
+            f"  Total incl. VAT: ${self.amount_only_vat},\n"
             f"  Total Product Quantity: {self.total_quantity},\n"
             f"  Pay method used: {self.pay_method}\n"
             f"  Date of sale: {self.sale_date}\n"
@@ -231,7 +231,7 @@ class SaleManagement:
             iva = unit.product.price_incl_vat - unit.product.price_excl_vat
             iva_values.append(iva)
         total_iva = sum(iva_values)
-        self.amount_incl_vat = total_iva
+        self.amount_only_vat = total_iva
         console_logger.info(f'Total IVA: ${total_iva}')
         return total_iva
 
@@ -282,7 +282,9 @@ class SalePersister:
         insert_operation = RegisterSaleDAO(session)
         sale_id = insert_operation.insert_sale_record(
                             self.sale.total_quantity, 
-                            self.sale.amount, 
+                            self.sale.amount,
+                            self.sale.amount_excl_vat,
+                            self.sale.amount_only_vat,
                             self.sale.pay_method,
                             self.sale.sale_date, 
                             self.sale.sale_hour

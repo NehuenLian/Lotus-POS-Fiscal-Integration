@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Date, ForeignKey, Integer, Numeric, String, Time
+from sqlalchemy import (Boolean, Column, Date, ForeignKey, Integer, Numeric,
+                        String, Time)
 from sqlalchemy.orm import DeclarativeBase, relationship
 
 
@@ -26,9 +27,12 @@ class Sales(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     db_purchased_quantity = Column(Integer, nullable=False)
     db_amount = Column(Numeric(7, 2), nullable=False)
+    db_net_amount = Column(Numeric(7, 2), nullable=False)
+    db_total_iva_amount = Column(Numeric(7, 2), nullable=False)
     db_payment_method = Column(String(100), nullable=False)
     db_date = Column(Date, nullable=False)
     db_hour = Column(Time, nullable=False)
+    db_is_invoiced = Column(Boolean, nullable=False, default=False)
 
     details = relationship("SalesDetails", back_populates="sale")
 
