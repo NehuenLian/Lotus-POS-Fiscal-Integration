@@ -1,10 +1,10 @@
 from sqlalchemy.exc import ArgumentError
 
+from middleware.middle import middleware_controller
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
-from src.utils.logger_config import controller_logger
-from middleware.middle import middleware_controller
+from src.utils.logger import console_logger, controller_logger
 
 
 class SalesManagementController:
@@ -23,7 +23,7 @@ class SalesManagementController:
     def get_product(self, barcode: str) -> None:
         try:
             product = self.sale_operation.get_full_product(barcode)
-            print(product)
+            console_logger.info(f"Product obtained: {product}")
             self._view.create_view_product(product)
         
         except InvalidBarcodeError:
@@ -35,7 +35,7 @@ class SalesManagementController:
             controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
-            controller_logger(e)
+            controller_logger.error(f"Error in SalesManagementController.get_product: {e}")
     
     def add_new_product(self, product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price): # Frontend
         self.sale_operation.create_product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
@@ -44,30 +44,30 @@ class SalesManagementController:
         """
         Handle the process of removing a product from the cart if the user decides not to buy it.
         """
-        controller_logger.info(f'User choice to remove product with ID: {id_to_cancel} from cart.')
+        console_logger.info(f'User choice to remove product with ID: {id_to_cancel} from cart.')
         self.sale_operation.cancel_product(id_to_cancel)
     
     def update_product_status(self, product: Product) -> None:
         """
         The DTO 'Product' transitions into a sales-state object, acquiring attributes such as 'subtotal' or 'quantity per product' (subquantity).
         """
-        controller_logger.info('Product transitions into a sales-state object')
+        console_logger.info('Product transitions into a sales-state object')
         self.sale_operation.build_product_sale(product)
 
     def select_pay_method(self, method: str) -> None:
         self.sale_operation.set_pay_method(method)
-        controller_logger.info(f'Pay method choosed: {method}')
+        console_logger.info(f'Pay method choosed: {method}')
 
     def complete_sale(self) -> None:
         self.sale_operation.build_product_sale()
         self.sale_operation.prepare_sale_summary()
         sale_persister = SalePersister(self.sale_operation)
-        sale_list = self.sale_operation.get_sale_list()
+        sale_object = self.sale_operation.get_sale_list()
 
-        middleware_controller(sale_list)
+        middleware_controller(sale_object)
 
         sale_persister.confirm_transaction()
-        controller_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
+        console_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
         self._view.show_notification_from_controller("Venta registrada exitosamente.")
 
 
