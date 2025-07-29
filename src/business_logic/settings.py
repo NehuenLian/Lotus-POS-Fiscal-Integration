@@ -3,7 +3,7 @@ from pathlib import Path
 
 from dotenv import set_key
 
-from src.utils.logger_config import business_logger
+from src.utils.logger import business_logger
 
 
 class SettingsManagement:

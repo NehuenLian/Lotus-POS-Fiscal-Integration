@@ -8,7 +8,7 @@ from sqlalchemy.exc import IntegrityError, NoResultFound, SQLAlchemyError
 from src.data_access.database_tables import Sales, SalesDetails, Stock
 from src.exceptions import (DBError, ProductNotFoundError,
                             TransactionIntegrityError)
-from src.utils.logger_config import data_access_logger
+from src.utils.logger import console_logger, data_access_logger
 
 
 class RegisterSaleDAO:

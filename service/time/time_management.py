@@ -2,12 +2,12 @@ from datetime import datetime, timedelta, timezone
 
 import ntplib
 
-from service.utils.logger import logger
+from service.utils.logger import console_logger, file_logger
 
 
 def generate_ntp_timestamp() -> tuple[int, str, str]:
 
-    logger.debug("Consulting NTP for get the datetime...")
+    console_logger.debug("Consulting NTP for get the datetime...")
 
     client = ntplib.NTPClient()
     response = client.request('time.afip.gov.ar')
@@ -21,6 +21,6 @@ def generate_ntp_timestamp() -> tuple[int, str, str]:
     generation_time = generation_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
     expiration_time = expiration_dte.strftime('%Y-%m-%dT%H:%M:%SZ')
 
-    logger.debug(f"Datetime values: epoch: {actual_time_epoch} | gentime: {generation_time} | exptime: {expiration_time}")
+    console_logger.debug(f"Datetime values: epoch: {actual_time_epoch} | gentime: {generation_time} | exptime: {expiration_time}")
 
     return actual_time_epoch, generation_time, expiration_time

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from lxml import etree
 
 from service.time.time_management import generate_ntp_timestamp
-from service.utils.logger import logger
+from service.utils.logger import console_logger, file_logger
 
 
 def build_login_ticket_request():
@@ -57,7 +57,7 @@ def extract_token_and_sign_from_xml(xml_name: str) -> tuple[str, str]:
 
 def is_expired(xml_name: str) -> bool:
 
-    logger.debug(f"Running is_expired() function for {xml_name}")
+    console_logger.debug(f"Running is_expired() function for {xml_name}")
 
     _, actual_hour, _ = generate_ntp_timestamp()
 
@@ -82,4 +82,4 @@ def save_xml(root, xml_name: str):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tree = etree.ElementTree(root)
     tree.write(path, pretty_print=True, xml_declaration=True, encoding="UTF-8")
-    logger.info(f"{xml_name} successfully saved.")
+    console_logger.info(f"{xml_name} successfully saved.")

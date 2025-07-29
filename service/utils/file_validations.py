@@ -1,6 +1,6 @@
 import os
 
-from service.utils.logger import logger
+from service.utils.logger import console_logger, file_logger
 
 
 def xml_exists(xml_name: str) -> bool:

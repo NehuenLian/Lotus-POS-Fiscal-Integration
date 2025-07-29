@@ -5,7 +5,7 @@ from decimal import Decimal  # Only for typing
 from src.data_access.repositories.register_sale_dao import RegisterSaleDAO
 from src.data_access.session_manager import session_scope
 from src.exceptions import InvalidBarcodeError
-from src.utils.logger_config import business_logger
+from src.utils.logger import business_logger, console_logger
 
 
 class Product: # DTO
@@ -88,7 +88,7 @@ class ProductSale:
         for unit in cls.productsale_instances:
             product_ids.append(unit.product.product_id)
         product_count = Counter(product_ids)
-        business_logger.info(f'Full product count(key:id, value: quantity): {product_count}')
+        console_logger.info(f'Full product count(key:id, value: quantity): {product_count}')
         return product_count
     
     @classmethod
@@ -135,7 +135,7 @@ class SaleManagement:
         self.sale_date = None
         self.sale_hour = None
 
-        business_logger.info('Program flow started. [SALES MANAGEMENT]')
+        console_logger.info('Program flow started. [SALES MANAGEMENT]')
 
     def __repr__(self):
         return (
@@ -150,7 +150,7 @@ class SaleManagement:
         )
     
     def get_sale_list(self):
-        return self.sale_list
+        return self
 
     def clear_sale_list(self) -> None:
         self.sale_list.clear()
@@ -164,7 +164,7 @@ class SaleManagement:
                 product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat , customer_price = query.get_product(barcode)
                 product = Product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
 
-                business_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
+                console_logger.info(f'Barcode recovered:"{barcode}". Product exists. (ID:{product_id}) Product:"{product.product_name}" obtained from database.')
                 if product.product_id:
                     return product
         else:
@@ -172,7 +172,7 @@ class SaleManagement:
             
     def create_product(self, product_id: int, barcode: str, product_name: str, available_quantity: int, price_excl_vat: Decimal, price_incl_vat: Decimal, customer_price: Decimal) -> None:
         Product(product_id, barcode, product_name, available_quantity, price_excl_vat, price_incl_vat, customer_price)
-        business_logger.debug(
+        console_logger.debug(
             f"A product was added with the following characteristics: "
             f"product_id={product_id}, barcode='{barcode}', product_name='{product_name}', "
             f"available_quantity={available_quantity}, customer_price=${customer_price}"
@@ -182,12 +182,12 @@ class SaleManagement:
         for unit in Product.product_instance_list[:]:
             if id_to_cancel == unit.product_id:
                 Product.product_instance_list.remove(unit)
-                business_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
+                console_logger.info(f'Product "{unit.product_name}" (ID: {unit.product_id}) was removed from cart from user action.')
                 break
 
     def set_pay_method(self, method_selected: str) -> None:
         self.pay_method = method_selected
-        business_logger.info(f'Pay method selected: "{method_selected}"')
+        console_logger.info(f'Pay method selected: "{method_selected}"')
 
     def build_product_sale(self):
         """
@@ -204,7 +204,7 @@ class SaleManagement:
     def compute_total_quantity(self) -> int:
         total_quantity = len(self.sale_list)
         self.total_quantity = total_quantity
-        business_logger.info(f'Total quantity: {total_quantity}')
+        console_logger.info(f'Total quantity: {total_quantity}')
         return self.total_quantity
         
     def compute_total_amount(self) -> float:
@@ -213,7 +213,7 @@ class SaleManagement:
             prices.append(unit.product.customer_price)
         amount = sum(prices)
         self.amount = amount
-        business_logger.info(f'Sale amount: ${amount}')
+        console_logger.info(f'Sale amount: ${amount}')
         return amount
     
     def compute_total_amount_excl_vat(self) -> float:
@@ -222,7 +222,7 @@ class SaleManagement:
             prices.append(unit.product.price_excl_vat)
         amount_excl_vat = sum(prices)
         self.amount_excl_vat = amount_excl_vat
-        business_logger.info(f'Sale amount excl. VAT: ${amount_excl_vat}')
+        console_logger.info(f'Sale amount excl. VAT: ${amount_excl_vat}')
         return amount_excl_vat
 
     def compute_total_iva(self) -> float:
@@ -231,8 +231,8 @@ class SaleManagement:
             iva = unit.product.price_incl_vat - unit.product.price_excl_vat
             iva_values.append(iva)
         total_iva = sum(iva_values)
-        self.total_iva = total_iva
-        business_logger.info(f'Total IVA: ${total_iva}')
+        self.amount_incl_vat = total_iva
+        console_logger.info(f'Total IVA: ${total_iva}')
         return total_iva
 
     def remove_duplicates(self) -> None:
@@ -287,7 +287,7 @@ class SalePersister:
                             self.sale.sale_date, 
                             self.sale.sale_hour
                         )
-        business_logger.info(f'Successfully inserted the record for (Sale ID: {sale_id}) in "Sales" table.')
+        console_logger.info(f'Successfully inserted the record for (Sale ID: {sale_id}) in "Sales" table.')
         return sale_id
 
     def insert_sale_details(self, sale_id: int, details_list: list, session) -> None:
@@ -300,7 +300,7 @@ class SalePersister:
                                 product['unit_price'],
                                 product['subtotal']
                             )
-        business_logger.info(f'Successfully inserted the details for (Sale ID: {sale_id}) in "SalesDetails" table.')
+        console_logger.info(f'Successfully inserted the details for (Sale ID: {sale_id}) in "SalesDetails" table.')
 
     def update_inventory(self, details_list: list, session):
         update_inventory = RegisterSaleDAO(session)
@@ -309,7 +309,7 @@ class SalePersister:
                             product['product_id'],
                             product['quantity']
                         )
-        business_logger.info(f'Existences (Stock table) successfully updated.')
+        console_logger.info(f'Existences (Stock table) successfully updated.')
 
     def confirm_transaction(self) -> None:
         """
@@ -322,13 +322,13 @@ class SalePersister:
             - Update stock levels according to the purchased products.
             - Clear product and sales lists from memory after a successful transaction.
         """
-        business_logger.info(f'Starting final transaction.')
+        console_logger.info(f'Starting final transaction.')
         with session_scope() as session:
             details_list = self.get_products_dict()
             sale_id = self.insert_sale(session)
             self.insert_sale_details(sale_id, details_list, session)
             self.update_inventory(details_list, session)
-            business_logger.info(f'[IMPORTANT] Transaction: {sale_id} successfully completed.')
+            console_logger.info(f'[IMPORTANT] Transaction: {sale_id} successfully completed.')
 
             # Clear product lists
             Product.clear_product_instance_list()

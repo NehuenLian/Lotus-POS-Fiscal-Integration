@@ -4,7 +4,7 @@ from typing import Tuple
 from src.data_access.repositories.manage_prices_dao import ManagePricesDAO
 from src.data_access.session_manager import session_scope
 from src.exceptions import InvalidPriceError
-from src.utils.logger_config import business_logger
+from src.utils.logger import business_logger, console_logger
 
 
 class PriceManagement:
@@ -15,7 +15,7 @@ class PriceManagement:
         with session_scope() as session:
             query = ManagePricesDAO(session)
             id, barcode, product_name, price = query.select_id_name_price(barcode)
-            business_logger.info(f'Product found: "{product_name}" (ID: {id}) at ${price}')
+            console_logger.info(f'Product found: "{product_name}" (ID: {id}) at ${price}')
 
             return id, barcode, product_name, price
 
@@ -28,8 +28,8 @@ class PriceManagement:
         with session_scope() as session:
             query = ManagePricesDAO(session)
             query.update_price_in_db(id, new_price)
-            business_logger.info(f'Updated price for Product (ID {id}): ${new_price}')
-            business_logger.info('[IMPORTANT] PRICE SUCCESSFULLY UPDATED. PROCESS ENDED SUCCESSFULL.\n-')
+            console_logger.info(f'Updated price for Product (ID {id}): ${new_price}')
+            console_logger.info('[IMPORTANT] PRICE SUCCESSFULLY UPDATED. PROCESS ENDED SUCCESSFULL.\n-')
 
     # Validations
     def _is_price_valid (self, new_price: float) -> bool:

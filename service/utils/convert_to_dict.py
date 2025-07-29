@@ -1,6 +1,6 @@
 from zeep.helpers import serialize_object
 
-from service.utils.logger import logger
+from service.utils.logger import console_logger, file_logger
 
 
 def convert_zeep_object_to_dict(returned_cae: object) -> dict:
@@ -13,7 +13,7 @@ def convert_zeep_object_to_dict(returned_cae: object) -> dict:
 
     # Convert to dict/OrderedDict
     CAE_response = serialize_object(returned_cae)
-    logger.debug("Zeep object converted to dict.")
+    console_logger.debug("Zeep object converted to dict.")
     return CAE_response
 
 

@@ -3,7 +3,7 @@ from sqlalchemy.exc import ArgumentError
 from src.business_logic.manage_prices import PriceManagement
 from src.exceptions import (InvalidPriceError, ProductNotFoundError,
                             TransactionIntegrityError)
-from src.utils.logger_config import controller_logger
+from src.utils.logger import console_logger, controller_logger
 
 
 class PricesManagementController:
@@ -23,6 +23,7 @@ class PricesManagementController:
         try:
             product_id, product_barcode, product_name, available_quantity = self.change_prices.search_product(barcode)
             self._view.display_product(product_id, product_barcode, product_name, available_quantity)
+            console_logger.info(f"Product obtained: {product_name}")
             return product_id
 
         except ProductNotFoundError as e:
@@ -32,7 +33,7 @@ class PricesManagementController:
             controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
-            controller_logger.error(e)
+            controller_logger.error(f"Error in PricesManagementController.get_product: {e}")
     
     def update_price(self, product_id: int, new_price: float):
         try:
@@ -49,4 +50,4 @@ class PricesManagementController:
             controller_logger.error(e)
         except Exception as e:
             self._view.show_notification_from_controller("Ocurrió un error desconocido.")
-            controller_logger.error(e)
+            controller_logger.error(f"Error in PricesManagementController.update_price: {e}")
