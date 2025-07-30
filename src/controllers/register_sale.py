@@ -1,6 +1,6 @@
 from sqlalchemy.exc import ArgumentError
 
-from integration.bridge import middleware_controller
+from integration.bridge import invoicing_controller
 from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
@@ -63,12 +63,15 @@ class SalesManagementController:
         self.sale_operation.prepare_sale_summary()
         sale_persister = SalePersister(self.sale_operation)
         sale_object = self.sale_operation.get_sale_list()
-
-        middleware_controller(sale_object)
-
-        sale_persister.confirm_transaction()
+        sale_id = sale_persister.confirm_transaction()
         console_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
         self._view.show_notification_from_controller("Venta registrada exitosamente.")
 
-
+        # Start the invoicing process (separate from the sale registration process)
+        invoice_approved = invoicing_controller(sale_object)
+        
+        if invoice_approved:
+            sale_persister.update_fiscal_status(sale_id, True)
+        else:
+            sale_persister.update_fiscal_status(sale_id, False)
 

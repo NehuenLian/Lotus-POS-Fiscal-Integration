@@ -304,7 +304,7 @@ class SalePersister:
                             )
         console_logger.info(f'Successfully inserted the details for (Sale ID: {sale_id}) in "SalesDetails" table.')
 
-    def update_inventory(self, details_list: list, session):
+    def update_inventory(self, details_list: list, session) -> None:
         update_inventory = RegisterSaleDAO(session)
         for product in details_list:
             update_inventory.update_stock_table(
@@ -313,7 +313,14 @@ class SalePersister:
                         )
         console_logger.info(f'Existences (Stock table) successfully updated.')
 
-    def confirm_transaction(self) -> None:
+    def update_fiscal_status(self, sale_id: int, status: bool) -> None:
+        with session_scope() as session:
+            update_status = RegisterSaleDAO(session)
+            update_status.update_sale_fiscal_status(sale_id, status)
+            
+        console_logger.info(f"Sale status changed to: {status}")
+
+    def confirm_transaction(self) -> int:
         """
         Implements the Unit of Work design pattern to ensure atomic sales transactions.
 
@@ -336,3 +343,5 @@ class SalePersister:
             Product.clear_product_instance_list()
             ProductSale.clear_productsale_instances()
             self.sale.clear_sale_list()
+
+            return sale_id

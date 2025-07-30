@@ -85,3 +85,21 @@ class RegisterSaleDAO:
         except SQLAlchemyError as e:
             data_access_logger.exception(f'Unexpected database error during data access operation(INSERT). Exception details: {e}')
             raise DBError(original_exception=e)
+        
+    def update_sale_fiscal_status(self, sale_id: int, status: bool):
+        try:
+            sale_to_update = self.session.execute(select(Sales).filter_by(id=sale_id)).scalar_one()
+            sale_to_update.db_is_invoiced = status
+            self.session.commit()
+
+        except NoResultFound as e:
+            data_access_logger.warning(f'No result found in database for ID "{sale_id}". Exception details: {e}')
+            raise ProductNotFoundError(barcode_or_id=sale_id, original_exception=e)
+
+        except IntegrityError as e:
+            data_access_logger.exception(f'Database integrity constraint violated during data access operation (UPDATE). Exception details: {e}')
+            raise TransactionIntegrityError(original_exception=e)
+        
+        except SQLAlchemyError as e:
+            data_access_logger.exception(f'Unexpected database error during data access operation(FULL TRANSACTION:SELECT, UPDATE). Exception details: {e}')
+            raise DBError(original_exception=e)
