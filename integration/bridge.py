@@ -6,17 +6,13 @@ from service.utils.logger import console_logger, file_logger
 
 
 def invoicing_controller(sale_object) -> bool:
-    try:
-        invoice_payload = build_sale_summary_payload(sale_object)
-        CAE_response = request_invoice_controller(invoice_payload)
 
-        if response_has_errors(CAE_response):
-            console_logger.error("Middleware: response contains errors.")
-            return False
-        else:
-            console_logger.debug("Middleware: invoice processed successfully.")
-            return True
+    invoice_payload = build_sale_summary_payload(sale_object)
+    CAE_response = request_invoice_controller(invoice_payload)
 
-    except Exception as e:
-        console_logger.exception(f"Middleware: unexpected error occurred: {e}")
+    if response_has_errors(CAE_response):
+        console_logger.error("Middleware: response contains errors.")
         return False
+    else:
+        console_logger.debug("Middleware: invoice processed successfully.")
+        return True

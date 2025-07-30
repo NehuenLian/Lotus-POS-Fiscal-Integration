@@ -5,6 +5,7 @@ from src.business_logic.register_sale import (Product, SaleManagement,
                                               SalePersister)
 from src.exceptions import InvalidBarcodeError, ProductNotFoundError
 from src.utils.logger import console_logger, controller_logger
+import threading
 
 
 class SalesManagementController:
@@ -67,11 +68,20 @@ class SalesManagementController:
         console_logger.info('[IMPORTANT]: SALE SUCCESSFULLY COMPLETED.\n-')
         self._view.show_notification_from_controller("Venta registrada exitosamente.")
 
-        # Start the invoicing process (separate from the sale registration process)
-        invoice_approved = invoicing_controller(sale_object)
-        
-        if invoice_approved:
-            sale_persister.update_fiscal_status(sale_id, True)
-        else:
-            sale_persister.update_fiscal_status(sale_id, False)
+        # Start the invoicing process in a new thread (separate from the sale registration process)
+        def facturation_task():
+            try:
+                invoice_approved = invoicing_controller(sale_object)
+                if invoice_approved:
+                    sale_persister.update_fiscal_status(sale_id, True)
+                    console_logger.debug(f"Fiscal status updated: Sale {sale_id} facturated.")
+                else:
+                    sale_persister.update_fiscal_status(sale_id, False)
+                    console_logger.error(f"Fiscal status updated: Sale {sale_id} NOT facturated.")
+            except Exception as e:
+                console_logger.exception(f"Error in invoicing thread for Sale {sale_id}: {e}")
+                sale_persister.update_fiscal_status(sale_id, False)
 
+        thread = threading.Thread(target=facturation_task)
+        thread.daemon = True
+        thread.start()
