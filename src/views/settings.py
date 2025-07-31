@@ -99,7 +99,7 @@ class DomainComponents:
         input_field = QLineEdit()
         input_field.setPlaceholderText("Ingrese una URL...")
         input_field.setFixedWidth(200)
-        input_field.setFixedHeight(30)
+        input_field.setFixedHeight(35)
         input_field.setMaxLength(40)
 
         return input_field
@@ -107,13 +107,13 @@ class DomainComponents:
     def update_url_button(self) -> QPushButton:
         update_button = QPushButton("Actualizar")
         update_button.setFixedWidth(100)
-        update_button.setFixedHeight(30)
+        update_button.setFixedHeight(35)
 
         return update_button
     
     def restart_app_button(self) -> QPushButton:
         restart_button = QPushButton("Reiniciar aplicación")
-        restart_button.setFixedWidth(120)
-        restart_button.setFixedHeight(30)
+        restart_button.setFixedWidth(165)
+        restart_button.setFixedHeight(35)
 
         return restart_button

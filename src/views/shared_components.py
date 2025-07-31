@@ -13,7 +13,7 @@ def display_textfield(action: Callable[[], None]) -> QLineEdit:
     input_field = QLineEdit()
     input_field.setPlaceholderText("Ingrese el código de barras...")
     input_field.setFixedWidth(200)
-    input_field.setFixedHeight(30)
+    input_field.setFixedHeight(35)
     input_field.setMaxLength(40)
 
     input_field.returnPressed.connect(action)
@@ -24,7 +24,7 @@ def display_textfield(action: Callable[[], None]) -> QLineEdit:
 def display_send_button(action: Callable[[], None]) -> QPushButton:
     button = QPushButton("Enviar")
     button.setFixedWidth(100)
-    button.setFixedHeight(30)
+    button.setFixedHeight(35)
 
     button.clicked.connect(action)
 

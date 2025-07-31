@@ -111,11 +111,21 @@ class DomainComponents:
         table.setColumnCount(4)
         table.setHorizontalHeaderLabels(["ID", "Código", "Nombre", "Stock"])
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        header = table.horizontalHeader()
 
-        table.setFixedWidth(500)
+        header.setSectionResizeMode(0, QHeaderView.Fixed)
+        header.setSectionResizeMode(1, QHeaderView.Fixed)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.Fixed)
+
+        table.setColumnWidth(0, 60)
+        table.setColumnWidth(1, 135)
+        table.setColumnWidth(3, 80)
+
+        table.setFixedWidth(650)
         table.setFixedHeight(200)
-
         table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+        table.verticalHeader().setDefaultSectionSize(50)
 
         return table

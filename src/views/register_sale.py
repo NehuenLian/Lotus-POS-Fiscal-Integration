@@ -201,11 +201,11 @@ class SalesViewManager(QWidget):
         self.table.setItem(new_row, 4, QTableWidgetItem(str(quantity)))
         self.table.setItem(new_row, 5, QTableWidgetItem(str(subtotal)))
 
-        btn_add = QPushButton("+")
+        btn_add = QPushButton("Agregar")
         btn_add.clicked.connect(lambda _, p_id=last_id: self._add_one(p_id))
         self.table.setCellWidget(new_row, 6, btn_add)
 
-        btn_del = QPushButton("-")
+        btn_del = QPushButton("Quitar")
         btn_del.clicked.connect(lambda _, p_id=last_id: self._delete_one(p_id))
         self.table.setCellWidget(new_row, 7, btn_del)
 
@@ -316,14 +316,29 @@ class DomainComponents:
         table = QTableWidget()
 
         table.setColumnCount(8)
-        table.setHorizontalHeaderLabels(["ID", "Código", "Nombre", "Precio", "Cantidad", "Subtotal", "Agregar", "Eliminar"])
+        table.setHorizontalHeaderLabels(["ID", "Código", "Nombre", "Precio", "Cant.", "Subtotal", "Agregar", "Eliminar"])
+        header = table.horizontalHeader()
 
-        table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.Fixed)
+        header.setSectionResizeMode(1, QHeaderView.Fixed)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.Fixed)
+        header.setSectionResizeMode(4, QHeaderView.Fixed)
+        header.setSectionResizeMode(8, QHeaderView.Fixed)
+        header.setSectionResizeMode(9, QHeaderView.Fixed)
+
+        table.setColumnWidth(0, 60)
+        table.setColumnWidth(1, 135)
+        table.setColumnWidth(3, 80)
+        table.setColumnWidth(4, 60)
+        table.setColumnWidth(8, 100)
+        table.setColumnWidth(9, 100)
 
         table.setFixedWidth(1100)
         table.setFixedHeight(400)
-
         table.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+        table.verticalHeader().setDefaultSectionSize(50)
 
         return table
     
@@ -332,16 +347,16 @@ class DomainComponents:
         pay_method_label = QLabel("Método de pago:  ")
 
         cash_button = QPushButton("Efectivo")
-        cash_button.setFixedWidth(100)
-        cash_button.setFixedHeight(30)
+        cash_button.setFixedWidth(110)
+        cash_button.setFixedHeight(35)
 
         transfer_button = QPushButton("Transferencia")
-        transfer_button.setFixedWidth(100)
-        transfer_button.setFixedHeight(30)
+        transfer_button.setFixedWidth(130)
+        transfer_button.setFixedHeight(35)
 
         card_button = QPushButton("Tarjeta")
         card_button.setFixedWidth(100)
-        card_button.setFixedHeight(30)
+        card_button.setFixedHeight(35)
 
         return pay_method_label, cash_button, transfer_button, card_button
     
