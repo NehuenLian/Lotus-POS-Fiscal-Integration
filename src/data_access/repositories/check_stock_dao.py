@@ -14,7 +14,6 @@ class CheckStockDAO:
 
     def select_name_quantity(self, barcode: str) -> Tuple[int, str, str, int]: # check_stock.py
         try:
-            data_access_logger.warning("Consulting...")
             product = self.session.execute(select(Stock).filter_by(db_barcode=barcode)).scalar_one()
             return product.id, product.db_barcode, product.db_product_name, product.db_available_quantity
         
