@@ -1,0 +1,114 @@
+/* Fondo general */
+QWidget {
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* Etiquetas */
+QLabel {
+    font-size: 16px;
+    font-weight: 500;
+    color: #f1f1f1;
+}
+
+/* Botones generales */
+QPushButton {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #333333;
+}
+QPushButton:pressed {
+    background-color: #444444;
+}
+
+/* Botones dentro de tablas */
+QTableWidget QPushButton {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    font-weight: normal;
+}
+QTableWidget QPushButton:hover {
+    background-color: #3399ff;
+}
+QTableWidget QPushButton:pressed {
+    background-color: #005a9e;
+}
+
+/* Campos de texto */
+QLineEdit {
+    background-color: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: #e0e0e0;
+    selection-background-color: #0078d7;
+    selection-color: #ffffff;
+}
+QLineEdit:focus {
+    border: 1px solid #0078d7;
+}
+
+/* Tabla */
+QTableWidget {
+    background-color: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    gridline-color: #2c2c2c;
+    font-size: 14px;
+    color: #e0e0e0;
+    selection-background-color: #0078d7;
+    selection-color: #ffffff;
+    alternate-background-color: #252525;
+}
+QTableWidget::item {
+    padding: 5px;
+    border-bottom: 1px solid #2a2a2a; /* Línea sutil entre filas */
+}
+QTableWidget::item:selected {
+    background-color: #0078d7;
+    color: white;
+}
+
+/* Hover en filas completas */
+QTableWidget::item:hover {
+    background-color: #2f2f2f;
+}
+
+/* Encabezados de tabla */
+QHeaderView::section {
+    background-color: #2b2b2b;
+    color: #e0e0e0;
+    padding: 8px;
+    font-weight: bold;
+    border: none;
+    border-bottom: 2px solid #0078d7;
+}
+
+/* Scrollbars */
+QScrollBar:vertical {
+    border: none;
+    background: #121212;
+    width: 10px;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #333333;
+    border-radius: 5px;
+}
+QScrollBar::handle:vertical:hover {
+    background: #555555;
+}
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
