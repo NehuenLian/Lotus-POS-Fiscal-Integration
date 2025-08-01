@@ -44,8 +44,7 @@ src/
 
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/NehuenLian/POS_MVP
-   cd lotus-pos
+   git clone https://github.com/NehuenLian/Lotus-POS-Fiscal-Integration
    ```
 
 2. **Create and activate a virtual environment:**
@@ -62,7 +61,7 @@ src/
 4. **Configure the database:**
    - Create a `.env` file in the project root with:
      ```
-     DB_URL="sqlite:///test_db.db"
+     DB_URL="sqlite:///src/data_access/sample_database.db"
      ```
      Or use your preferred database URL.
 
@@ -72,7 +71,7 @@ src/
 
 1. Run the application:
    ```sh
-   python src/main.py
+   python main.py
    ```
 
 2. Navigate through the sections from the sidebar:
@@ -88,7 +87,7 @@ src/
 - [PySide6](https://pypi.org/project/PySide6/) (GUI)
 - [SQLAlchemy](https://www.sqlalchemy.org/) (ORM)
 - [python-dotenv](https://pypi.org/project/python-dotenv/) (Environment variables)
-- [lxml, zeep, tenacity, ntplib] (for fiscal integration, optional)
+- [lxml, zeep, tenacity, ntplib] (for fiscal integration)
 
 ---
 
