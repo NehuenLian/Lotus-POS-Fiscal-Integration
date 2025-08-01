@@ -2,7 +2,6 @@ from service.response_errors_handler.sync_invoice_number_controller import \
     sync_invoice_number
 from service.utils.logger import console_logger, file_logger
 
-
 # Dictionary of known errors.
 # Format: {Error code: Solution}
 errors_catalog = {

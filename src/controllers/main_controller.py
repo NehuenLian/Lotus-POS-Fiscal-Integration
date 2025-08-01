@@ -1,6 +1,5 @@
 import os
 
-from dotenv import load_dotenv
 from PySide6.QtWidgets import QApplication
 
 from src.controllers.check_stock import StockManagementController
