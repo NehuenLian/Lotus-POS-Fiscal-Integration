@@ -1,4 +1,4 @@
-from dotenv import load_dotenv
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from src.controllers.main_controller import MainController
@@ -9,8 +9,8 @@ def load_stylesheet(app):
 
 if __name__ == "__main__":
     app = QApplication([])
+    app.setWindowIcon(QIcon("src/views/assets/app_icon.ico")) # App Icon
     load_stylesheet(app)
-    load_dotenv(override=True)
     controller = MainController()
     controller.ui.show()
     app.exec()
