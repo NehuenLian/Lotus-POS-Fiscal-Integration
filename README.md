@@ -1,6 +1,6 @@
 # Lotus POS
 
-**Lotus POS** is a esktop Point of Sale system designed for small and medium-sized businesses. It allows you to manage sales, inventory, pricing, and database configuration in a simple way.
+**Lotus POS** is a desktop Point of Sale system designed for small and medium-sized businesses. It allows you to manage sales, inventory, pricing, and database configuration in a simple way.
 
 ---
 
