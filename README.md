@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://codecov.io/github/NehuenLian/Lotus-POS-Desktop">
-    <img src="https://codecov.io/github/NehuenLian/Lotus-POS-Desktop/graph/badge.svg?token=20WL0URAGI" alt="codecov"/>
+  <a href="https://codecov.io/github/NehuenLian/lotus-pos-desktop">
+    <img src="https://codecov.io/github/NehuenLian/lotus-pos-desktop/graph/badge.svg?token=20WL0URAGI" alt="codecov"/>
   </a>
 </p>
 
@@ -37,7 +37,7 @@ To learn more about how the app is built, you can consult the Architecture Decis
 
 1.  **Clone the repository:**
   ```bash
-  git clone https://github.com/NehuenLian/Lotus-POS-Desktop
+  git clone https://github.com/NehuenLian/lotus-pos-desktop
   ```
 
 2. **Go to repository:**
