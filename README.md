@@ -144,12 +144,10 @@ To run the packaging command, **pyinstaller** must be installed:
 ```text
 .
 ├── .github/
-├── .pytest_cache/
 ├── docs/
 ├── images/
 ├── integration/
 ├── src/
-│   ├── __pycache__/
 │   ├── business_logic/
 │   ├── controllers/
 │   ├── data_access/

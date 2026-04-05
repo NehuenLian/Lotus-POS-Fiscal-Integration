@@ -144,12 +144,10 @@ Para ejecutar el comando de empaquetado, se debe tener **pyinstaller** instalado
 ```text
 .
 ├── .github/
-├── .pytest_cache/
 ├── docs/
 ├── images/
 ├── integration/
 ├── src/
-│   ├── __pycache__/
 │   ├── business_logic/
 │   ├── controllers/
 │   ├── data_access/
