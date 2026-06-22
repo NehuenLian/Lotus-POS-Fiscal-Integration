@@ -46,11 +46,6 @@ To learn more about how the app is built, you can consult the Architecture Decis
   ```
 
 3. **Create and activate a virtual environment:**
-  - On Linux:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate
-    ```
   - On Windows:
     ```bash
     python -m venv venv
