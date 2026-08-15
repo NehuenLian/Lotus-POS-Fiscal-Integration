@@ -59,22 +59,22 @@ To learn more about how the app is built, you can consult the Architecture Decis
 
 5. **Environment variables configuration:**  
 Set the database URL in a `config.json` file in `url`:
-#
-`
+
+```bash
 {
   "database": {
     "url": "sqlite:///src/data_access/sample_database.db"
-  }
+    }
 }
-`
+```
 
 # Test setup
 
 For a quick test, the remote repository includes a sample database located at `src/data_access/sample_database.db` and a .CSV file with product data at `src/sample_data/inventory.csv`. To use this database, the `config.json` file already comes with this URL configured:
 #
-`
+```bash
 DB_URL="sqlite:///src/data_access/sample_database.db"
-`
+```
 #    
 The barcodes of the products registered in the sample database can be found in `src/sample_data/inventory.csv`.
 These can be used to **check stock**, **register sales**, or **modify prices**.
