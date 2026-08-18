@@ -6,7 +6,7 @@ def invoicing_controller(sale_data) -> bool:
     """
     Process invoice for a completed sale.
 
-    IMPORTANT: This function is called in a secundary thread, so any exception here
+    IMPORTANT: This function is called in a secondary thread, so any exception here
     will NOT crash the main POS thread. If you need to debug what happens
     when this fails, look at lines 72-88 in src/controllers/register_sale.py
     where the wrapper and error handling are implemented.
