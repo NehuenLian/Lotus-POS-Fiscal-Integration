@@ -24,7 +24,6 @@ Compatibility: Windows
 
 To learn more about how the app is built, you can consult the Architecture Decision Records (ADRs) in `/docs/adr/`.
 
-<h3 align="center">Frontend screenshot</h3>
 <p align="center">
   <img src="images/frontend_screenshot.jpg" alt="Lotus POS Frontend" width="700">
   <br>
